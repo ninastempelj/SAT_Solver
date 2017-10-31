@@ -10,6 +10,7 @@ class Formula:
             mapping[self] = freshVariable()
         return mapping[self]
 
+
 class Variable(Formula):
     def __init__(self, x):
         self.x = x
@@ -32,17 +33,26 @@ class Variable(Formula):
     def simplify(self):
         return self
 
+    def simplify_by(self, literal):
+        if literal == self:
+            return T
+        if Not(self) == literal:
+            return F
+        return self
+
     def tseytin(self, mapping):
         return self
 
     def equiv(self, variable):
         return And(Or(variable, Not(self)), Or(Not(variable), self))
 
+
 class Not(Formula):
     def __init__(self, x):
         self.x = makeFormula(x)
+        self.terms = frozenset(x)
 
-    def __str__(self, parentheses = False):
+    def __str__(self, parentheses=False):
         return "~" + self.x.__str__(True)
 
     def __hash__(self):
@@ -69,6 +79,10 @@ class Not(Formula):
             return self
         else:
             return self.flatten().simplify()
+
+    def simplify_by(self, literal):
+       return Not(self.x.simplify_by(literal))
+
 
     def tseytin(self, mapping):
         return Not(self.x.tseytin(mapping)).getVariable(mapping)
@@ -116,8 +130,7 @@ class Multi(Formula):
         const = self.getDualClass()()
         if const in terms:
             return const
-        if len(terms) == 1:
-            return terms[0]
+        # TODO: če sta dva enake vrednosti, enega vržemo ven
         return self.getClass()(*terms).flatten()
 
     def tseytin(self, mapping):
@@ -139,6 +152,16 @@ class And(Multi):
         return And(Or(variable, *(Not(x).flatten() for x in self.terms)),
                    *(Or(Not(variable), x) for x in self.terms))
 
+    def simplify_by(self, literal):
+        t = set()
+        for term in self.terms:
+            if term == Not(literal):
+                t.add(F)
+            if term != literal:
+                t.add(term.simplify_by())
+        self.terms = frozenset(t)
+
+
 class Or(Multi):
     empty = "F"
     connective = r" \/ "
@@ -153,6 +176,15 @@ class Or(Multi):
     def equiv(self, variable):
         return And(Or(Not(variable), *self.terms),
                    *(Or(variable, Not(x)) for x in self.terms))
+
+    def simplify_by(self, literal):
+        t = set()
+        for term in self.terms:
+            if term == literal:
+                t.add(T)
+            if term != Not(literal):
+                t.add(term.simplify_by())
+        self.terms = frozenset(t)
 
 T = And()
 F = Or()
