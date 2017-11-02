@@ -50,7 +50,7 @@ class Variable(Formula):
 class Not(Formula):
     def __init__(self, x):
         self.x = makeFormula(x)
-        self.terms = frozenset(x)
+        self.terms = frozenset({x})
 
     def __str__(self, parentheses=False):
         return "~" + self.x.__str__(True)
