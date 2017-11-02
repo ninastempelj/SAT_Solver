@@ -81,7 +81,11 @@ class Not(Formula):
             return self.flatten().simplify()
 
     def simplify_by(self, literal):
-       return Not(self.x.simplify_by(literal))
+        if literal == self:
+            return T
+        if Not(self).flatten() == literal:
+            return F
+        return Not(self.x.simplify_by(literal)).flatten()
 
 
     def tseytin(self, mapping):
@@ -155,7 +159,7 @@ class And(Multi):
     def simplify_by(self, literal):
         t = set()
         for term in self.terms:
-            if term == Not(literal):
+            if term == Not(literal).flatten():
                 t.add(F)
             if term != literal:
                 t.add(term.simplify_by())
@@ -182,7 +186,7 @@ class Or(Multi):
         for term in self.terms:
             if term == literal:
                 t.add(T)
-            if term != Not(literal):
+            if term != Not(literal).flatten():
                 t.add(term.simplify_by())
         self.terms = frozenset(t)
 
