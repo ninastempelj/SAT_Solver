@@ -23,28 +23,34 @@ def main(vhod, izhod):
 
 def step12(formula):
     """ Funkcija formulo poenostavi, vrne pa True in novo formulo, če je spremembna potrebna, sicer False in staro formulo"""
-    #formula.simplify()
 
-    print(str(formula) + " Step12")
+    changed = False
+    changes = set()
+    print(" Step12")
     if isinstance(formula, Variable):
-        return False, formula.simplify(), formula
+        return changed, formula.simplify(), formula
     if len(formula.terms) == 1:
-        return False, formula.simplify(), 0
+        return changed, formula.simplify(), 0
     for ali in formula.terms:
+        print("korak")
         if isinstance(ali, Variable):
             formula.simplify_by(ali)
-            return True, formula.simplify(), ali
+            changed = True
+            changes.add(ali)
         elif isinstance(ali, Not):
             formula.simplify_by(ali)
-            return True, formula.simplify(), ali
+            changed = True
+            changes.add(ali)
         elif len(ali.terms) == 1:
             for term in ali.terms:
                 formula.simplify_by(term)
-                return True, formula.simplify(), term
-    return False, formula, 0
+                changed = True
+                changes.add(term)
+    return changed, formula.simplify(), changes
 
 
 def choose_literal(formula):
+    print("izbiram spremenljivko")
     if isinstance(formula, Variable) | isinstance(formula, Not):
         return formula
     for term in formula.terms:
@@ -56,31 +62,34 @@ def choose_literal(formula):
 
 
 def dpll(stara_formula, valuation={}):
-    print(str(stara_formula) + " začetek dpll")
-    changed, formula, element = step12(stara_formula.simplify())
+    print(" začetek dpll")
+    changed, formula, changes = step12(stara_formula.simplify())
     if not changed:
-        if not element == 0:
-            valuation[str(element)] = True
+        for change in changes:
+            valuation[str(change)] = True
     else:
         while changed:
-            valuation[str(element)] = True
-            changed, formula, element = step12(formula)
-    print(str(formula) + " korak3 dpll")
+            for change in changes:
+                valuation[str(change)] = True
+            changed, formula, changes = step12(formula)
+    #print(str(formula) + " korak3 dpll")
     if formula == T:
         return valuation
     if formula == F:
         return None ##Todo dpll kliče none
     literal = choose_literal(formula)
+
     formula1 = copy.deepcopy(formula)
-    print(str(type(literal)) + " " + str(type(formula1)))
+    #print(str(type(literal)) + " " + str(type(formula1)))
     formula1.simplify_by(literal)
-    print(str(formula1) + " po simplify dpll")
+    #print(str(formula1) + " po simplify dpll")
     valuation1 = copy.deepcopy(valuation) # a je to ok kopirano?
     valuation1[str(literal)] = True
-    print("tip " + str(type(formula1)))
+    print("zacel1")
     result1 = dpll(formula1, valuation1)
-    print(str(result1) + " result1")
-    print(str(formula) + " po result1")
+    print("končal1")
+    #print(str(result1) + " result1")
+    #print(str(formula) + " po result1")
     if result1 is None:
         #print("ugotovu da ne gre")
         formula2 = copy.deepcopy(formula)
@@ -149,4 +158,4 @@ def MOMS(formula):
 
 
 ##Test
-main("Examples/tester.txt", "bruh.txt")
+main("Examples/sudoku_easy.txt", "bruh.txt")
