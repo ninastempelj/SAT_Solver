@@ -162,7 +162,7 @@ class And(Multi):
             if term == Not(literal).flatten():
                 t.add(F)
             if term != literal:
-                t.add(term.simplify_by())
+                t.add(term.simplify_by(literal))
         self.terms = frozenset(t)
 
 
@@ -187,7 +187,7 @@ class Or(Multi):
             if term == literal:
                 t.add(T)
             if term != Not(literal).flatten():
-                t.add(term.simplify_by())
+                t.add(term.simplify_by(literal))
         self.terms = frozenset(t)
 
 T = And()
