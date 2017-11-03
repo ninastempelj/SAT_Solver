@@ -27,14 +27,15 @@ def step12(formula):
         if isinstance(term, Variable):
             changed = True
             formula.simplify_by(term)
-            formula.simplify()
-        if(isinstance(term, Not)):
+            new_formula  = formula.simplify()
+        elif(isinstance(term, Not)):
            if isinstance(term.x, Variable):
             changed = True
             formula.simplify_by(term)
-            formula.simplify()
-    formula.simplify()
-    return changed
+            new_formula = formula.simplify()
+        else:
+            new_formula = formula
+    return (changed, new_formula)
 
 
 def choose_literal(formula):
@@ -47,9 +48,9 @@ def choose_literal(formula):
         return choose_literal(term)
 
 
-def dpll(formula, valuation={}):
-    while step12(formula):
-        pass
+def dpll(stara_formula, valuation={}):
+    while step12(stara_formula)[1]:
+        formula = step12(star[2]
     print(str(formula) + " začetek dpll")
     if formula == T:
         return valuation

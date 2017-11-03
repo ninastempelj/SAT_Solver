@@ -50,7 +50,7 @@ class Variable(Formula):
 class Not(Formula):
     def __init__(self, x):
         self.x = makeFormula(x)
-        self.terms = frozenset({x})
+        self.terms = frozenset({self.x})
 
     def __str__(self, parentheses=False):
         return "~" + self.x.__str__(True)
@@ -59,7 +59,7 @@ class Not(Formula):
         return hash(("~", self.x))
 
     def __eq__(self, other):
-        return isinstance(other, Not) and self.x == other.x
+        return isinstance(other, Not) and self.x == other.terms
 
     def evaluate(self, values):
         return not self.x.evaluate(values)
@@ -132,7 +132,10 @@ class Multi(Formula):
     def simplify(self):
         terms = [x.simplify() for x in self.terms]
         const = self.getDualClass()()
+        print(const)
+        print(self)
         if const in terms:
+            print("je")
             return const
         # TODO: če sta dva enake vrednosti, enega vržemo ven
         return self.getClass()(*terms).flatten()
@@ -159,11 +162,18 @@ class And(Multi):
     def simplify_by(self, literal):
         t = set()
         for term in self.terms:
+            #print(term)
             if term == Not(literal).flatten():
+                #print("False")
                 t.add(F)
             if term != literal:
-                t.add(term.simplify_by(literal))
+                #print("dodajam")
+                term.simplify_by(literal)
+                t.add(term)
+                #print(str(t) + " zdej bi mogu bit en več")
+        #print(str(t) + " termsi in")
         self.terms = frozenset(t)
+        #print(self.terms)
 
 
 class Or(Multi):
@@ -186,8 +196,13 @@ class Or(Multi):
         for term in self.terms:
             if term == literal:
                 t.add(T)
-            if term != Not(literal).flatten():
-                t.add(term.simplify_by(literal))
+                #print("isto")
+            elif Not(term).flatten() == literal :
+                pass
+            else:
+                term.simplify_by(literal)
+                t.add(term)
+                #print("dodajam")
         self.terms = frozenset(t)
 
 T = And()
