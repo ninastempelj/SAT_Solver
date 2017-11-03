@@ -26,27 +26,29 @@ def step12(formula):
     #formula.simplify()
 
     print(str(formula) + " Step12")
-    if isinstance(formula, Variable) | len(formula.terms) == 1:
-        return False, formula.simplify()
+    if isinstance(formula, Variable):
+        return False, formula.simplify(), formula
+    if len(formula.terms) == 1:
+        return False, formula.simplify(), 0
     for ali in formula.terms:
         if isinstance(ali, Variable):
             formula.simplify_by(ali)
-            return True, formula.simplify()
+            return True, formula.simplify(), ali
         elif isinstance(ali, Not):
             formula.simplify_by(ali)
-            return True, formula.simplify()
+            return True, formula.simplify(), ali
         elif len(ali.terms) == 1:
             for term in ali.terms:
                 formula.simplify_by(term)
-                return True, formula.simplify()
-    return False, formula
+                return True, formula.simplify(), term
+    return False, formula, 0
 
 
 def choose_literal(formula):
     if isinstance(formula, Variable) | isinstance(formula, Not):
         return formula
     for term in formula.terms:
-        print(term)
+        #print(term)
         if isinstance(term, Variable) | isinstance(term, Not):
             return term
        # print("ni oknc")
@@ -55,13 +57,14 @@ def choose_literal(formula):
 
 def dpll(stara_formula, valuation={}):
     print(str(stara_formula) + " začetek dpll")
-    step1 = step12(stara_formula)
-    if not step1[0]:
-        formula = step1[1]
+    changed, formula, element = step12(stara_formula.simplify())
+    if not changed:
+        if not element == 0:
+            valuation[str(element)] = True
     else:
-        while step1[0]:
-            formula = step1[1]
-            step1 = step12(formula)
+        while changed:
+            valuation[str(element)] = True
+            changed, formula, element = step12(formula)
     print(str(formula) + " korak3 dpll")
     if formula == T:
         return valuation
@@ -73,7 +76,7 @@ def dpll(stara_formula, valuation={}):
     formula1.simplify_by(literal)
     print(str(formula1) + " po simplify dpll")
     valuation1 = copy.deepcopy(valuation) # a je to ok kopirano?
-    valuation1[literal] = True
+    valuation1[str(literal)] = True
     print("tip " + str(type(formula1)))
     result1 = dpll(formula1, valuation1)
     print(str(result1) + " result1")
@@ -83,7 +86,7 @@ def dpll(stara_formula, valuation={}):
         formula2 = copy.deepcopy(formula)
         formula2.simplify_by(Not(literal).flatten()) # flatten zato, da nimamo dvojne negacije
         valuation2 = copy.deepcopy(valuation) # a je to ok kopirano
-        valuation2[literal] = False
+        valuation2[str(literal)] = False
         result2 = dpll(formula2, valuation2)
         if result2 is None:
             return None

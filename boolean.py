@@ -31,14 +31,15 @@ class Variable(Formula):
         return values[self.x]
 
     def simplify(self):
+        if self.x in {T, F}:
+            return self.x
         return self
 
     def simplify_by(self, literal):
         if literal == self:
-            return T
+            self.x = T
         if Not(self) == literal:
-            return F
-        return self
+            self.x = F
 
     def tseytin(self, mapping):
         return self
