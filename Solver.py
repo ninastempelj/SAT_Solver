@@ -112,6 +112,24 @@ def readDimacs(input):
     file.close()
     return formula
 
+def MOMS(formula):
+    if not isinstance(formula, And):
+        raise NameError("Ni and v MOMSiju")
+    else:
+        dictFrequency ={}
+        for term in formula.terms:
+            if len(term.terms)==2:
+                for termsek in term.terms:
+                    if termsek in dictFrequency:
+                        dictFrequency[termsek] += 1
+                    else:
+                        dictFrequency[termsek] = 1
+    mostCommon = tupleFrequency = sorted(
+        dictFrequency.items(), key=operator.itemgetter(1), reverse=True)[0][0]
+    return(mostCommon)
+
+
+
 
 ##Test
 main("Examples/tester.txt", "bruh.txt")
