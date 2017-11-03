@@ -10,6 +10,7 @@
 from boolean import *
 import operator
 
+
 def main(vhod, izhod):
     formula = readDimacs(vhod)
     print(dpll(formula))
@@ -21,7 +22,6 @@ def main(vhod, izhod):
 def step12(formula):
     changed = False
     #formula.simplify()
-    print("bu")
     for term in formula.terms:
         if isinstance(term, Variable):
             changed = True
@@ -43,6 +43,7 @@ def choose_literal(formula):
     if not (isinstance(formula, And)):
         print(formula)
         return
+
     for term in formula.terms:
         if isinstance(term, Variable):
             return term
@@ -111,4 +112,6 @@ def readDimacs(input):
 
 
 ##Test
-main("Examples/sudoku_easy.txt", "bruh.txt")
+print("3")
+#main("Examples/sudoku_easy.txt", "bruh.txt")
+print("4")
