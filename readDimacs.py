@@ -31,10 +31,12 @@ def readDimacs(input):
             formulaAsList.append(Or(*(tuple(listOfVariables))))
     formula = And(*(tuple(formulaAsList)))
     tupleFrequency = sorted(dictFrequency.items(), key=operator.itemgetter(1), reverse=True) #Vrne seznam tuplov(spremenljivka, število ponovitev) od najpogostejših pada
+    listFrequency = [x for (x,y) in tupleFrequency]
     #print(dictFrequency) #TODO nej returna namesto printa
-    print(tupleFrequency) ##TODO return namesto printa
+    print(listFrequency) ##TODO return namesto printa
+    file.close()
     return formula
 
 
 ##Test
-#readDimacs("Examples/sudoku_easy.txt")
+readDimacs("Examples/sudoku_easy.txt")
