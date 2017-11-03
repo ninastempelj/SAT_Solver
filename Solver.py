@@ -20,55 +20,70 @@ def main(vhod, izhod):
     file.close()
 
 
+
 def step12(formula):
-    changed = False
+    """ Funkcija formulo poenostavi, vrne pa True in novo formulo, če je spremembna potrebna, sicer False in staro formulo"""
     #formula.simplify()
-    for term in formula.terms:
-        if isinstance(term, Variable):
-            changed = True
-            formula.simplify_by(term)
-            new_formula  = formula.simplify()
-        elif(isinstance(term, Not)):
-           if isinstance(term.x, Variable):
-            changed = True
-            formula.simplify_by(term)
-            new_formula = formula.simplify()
-        else:
-            new_formula = formula
-    return (changed, new_formula)
+
+    print(str(formula) + " Step12")
+    if isinstance(formula, Variable) | len(formula.terms) == 1:
+        return False, formula.simplify()
+    for ali in formula.terms:
+        if isinstance(ali, Variable):
+            formula.simplify_by(ali)
+            return True, formula.simplify()
+        elif isinstance(ali, Not):
+            formula.simplify_by(ali)
+            return True, formula.simplify()
+        elif len(ali.terms) == 1:
+            for term in ali.terms:
+                formula.simplify_by(term)
+                return True, formula.simplify()
+    return False, formula
 
 
 def choose_literal(formula):
-    #print(formula.terms)
+    if isinstance(formula, Variable) | isinstance(formula, Not):
+        return formula
     for term in formula.terms:
-        #print(term)
-        if isinstance(term, Variable):
+        print(term)
+        if isinstance(term, Variable) | isinstance(term, Not):
             return term
        # print("ni oknc")
         return choose_literal(term)
 
 
 def dpll(stara_formula, valuation={}):
-    while step12(stara_formula)[1]:
-        formula = step12(star[2]
-    print(str(formula) + " začetek dpll")
+    print(str(stara_formula) + " začetek dpll")
+    step1 = step12(stara_formula)
+    if not step1[0]:
+        formula = step1[1]
+    else:
+        while step1[0]:
+            formula = step1[1]
+            step1 = step12(formula)
+    print(str(formula) + " korak3 dpll")
     if formula == T:
         return valuation
     if formula == F:
         return None ##Todo dpll kliče none
     literal = choose_literal(formula)
-    formula1 = copy.copy(formula)
-    #print(literal)
+    formula1 = copy.deepcopy(formula)
+    print(str(type(literal)) + " " + str(type(formula1)))
     formula1.simplify_by(literal)
-    #print(str(formula) + " po simplify dpll")
+    print(str(formula1) + " po simplify dpll")
     valuation1 = copy.deepcopy(valuation) # a je to ok kopirano?
-    valuation1[literal] = T
+    valuation1[literal] = True
+    print("tip " + str(type(formula1)))
     result1 = dpll(formula1, valuation1)
+    print(str(result1) + " result1")
+    print(str(formula) + " po result1")
     if result1 is None:
-        formula2 = copy.copy(formula)
+        #print("ugotovu da ne gre")
+        formula2 = copy.deepcopy(formula)
         formula2.simplify_by(Not(literal).flatten()) # flatten zato, da nimamo dvojne negacije
         valuation2 = copy.deepcopy(valuation) # a je to ok kopirano
-        valuation2[literal] = F
+        valuation2[literal] = False
         result2 = dpll(formula2, valuation2)
         if result2 is None:
             return None
@@ -128,8 +143,6 @@ def MOMS(formula):
     mostCommon = tupleFrequency = sorted(
         dictFrequency.items(), key=operator.itemgetter(1), reverse=True)[0][0]
     return(mostCommon)
-
-
 
 
 ##Test

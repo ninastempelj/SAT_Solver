@@ -59,7 +59,7 @@ class Not(Formula):
         return hash(("~", self.x))
 
     def __eq__(self, other):
-        return isinstance(other, Not) and self.x == other.terms
+        return isinstance(other, Not) and self.x == other.x
 
     def evaluate(self, values):
         return not self.x.evaluate(values)
@@ -71,10 +71,10 @@ class Not(Formula):
             return self
 
     def simplify(self):
-        if isinstance(self.x, And):
-            return Or(*(Not(y) for y in self.x.terms)).simplify()
-        elif isinstance(self.x, Or):
-            return And(*(Not(y) for y in self.x.terms)).simplify()
+        if self.x == T:
+            return F
+        elif self.x == F:
+            return T
         elif isinstance(self.x, Variable):
             return self
         else:
@@ -82,10 +82,9 @@ class Not(Formula):
 
     def simplify_by(self, literal):
         if literal == self:
-            return T
-        if Not(self).flatten() == literal:
-            return F
-        return Not(self.x.simplify_by(literal)).flatten()
+            self.x = F
+        if self.x == literal:
+            self.x = T
 
 
     def tseytin(self, mapping):
@@ -132,10 +131,10 @@ class Multi(Formula):
     def simplify(self):
         terms = [x.simplify() for x in self.terms]
         const = self.getDualClass()()
-        print(const)
-        print(self)
+        #print(const)
+        #print(self)
         if const in terms:
-            print("je")
+            #print("je")
             return const
         # TODO: če sta dva enake vrednosti, enega vržemo ven
         return self.getClass()(*terms).flatten()
@@ -163,10 +162,10 @@ class And(Multi):
         t = set()
         for term in self.terms:
             #print(term)
-            if term == Not(literal).flatten():
+            if literal == Not(term).flatten():
                 #print("False")
                 t.add(F)
-            if term != literal:
+            if not term == literal:
                 #print("dodajam")
                 term.simplify_by(literal)
                 t.add(term)
