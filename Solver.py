@@ -23,7 +23,12 @@ def step12(formula):
     changed = False
     #formula.simplify()
     for term in formula.terms:
-        if isinstance(term, Variable) | (isinstance(term, Not) & isinstance(term.terms, Variable)):
+        if isinstance(term, Variable):
+            changed = True
+            formula.simplify_by(term)
+            formula.simplify()
+        if(isinstance(term, Not)):
+           if isinstance(term.terms, Variable):
             changed = True
             formula.simplify_by(term)
             formula.simplify()
@@ -31,6 +36,13 @@ def step12(formula):
 
 
 def choose_literal(formula):
+    print(type(formula))
+    if isinstance(formula, Not):
+        #print(type(formula))
+        return
+    if not (isinstance(formula, And)):
+        print(formula)
+        return
 
     for term in formula.terms:
         if isinstance(term, Variable):
@@ -44,7 +56,7 @@ def dpll(formula, valuation={}):
     if formula == T:
         return valuation
     if formula == F:
-        return None
+        return None ##Todo dpll kliče none
     literal = choose_literal(formula)
     formula.simplify_by(literal)
     valuation1 = valuation.copy() # a je to ok kopirano?
