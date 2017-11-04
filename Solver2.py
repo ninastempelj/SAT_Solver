@@ -30,15 +30,13 @@ def main(vhod, izhod):
     file.write(koncnaResitev)##TODO formula
     file.close()
 
-
-
 def step12(formula, valuation):
     """ Funkcija formulo poenostavi, vrne pa True in novo formulo, če je spremembna potrebna, sicer False in staro formulo"""
     changed = False
-    changes = set()
-    #print(" Step12")
+    print(str(valuation) + " Step12")
     if isinstance(formula, Variable):
         valuation.add(formula)
+        print(str(formula) + " dodan v step12")
         return changed, formula.simplify(), valuation
     if len(formula.terms) == 1:
         return changed, formula.simplify(), valuation
@@ -46,14 +44,17 @@ def step12(formula, valuation):
         tip = type(ali)
         if tip == Variable:
             valuation.add(ali)
+            print(str(ali) + " dodan v step12")
             formula.evaluate(valuation)
             changed = True
         elif tip == Not:
             valuation.add(ali)
+            print(str(ali) + " dodan v step12")
             formula.evaluate(valuation)
             changed = True
         elif len(ali.terms) == 1:
             for term in ali.terms:
+                print(str(term) + " dodan v step12")
                 valuation.add(term)
                 formula.evaluate(valuation)
                 changed = True
@@ -76,6 +77,7 @@ def dpll(stara_formula, valuation=set()):
     #print(valuation)
     changed, formula, valuation = step12(stara_formula.simplify(), valuation)
     while changed:
+        print(formula)
         changed, formula, valuation = step12(formula, valuation)
     #print(str(formula) + " korak3 dpll")
     if formula == T:
@@ -89,7 +91,7 @@ def dpll(stara_formula, valuation=set()):
     formula1.simplify_by(literal)
     #print(str(formula1) + " po simplify dpll")
     valuation1 = copy.deepcopy(valuation) # a je to ok kopirano?
-    valuation1 = valuation1 | {literal}
+    valuation1 = valuation1.add(literal)
     #print("zacel1")
     result1 = dpll(formula1, valuation1)
     #print("končal1")
@@ -100,7 +102,7 @@ def dpll(stara_formula, valuation=set()):
         formula2 = copy.deepcopy(formula)
         formula2.simplify_by(Not(literal).flatten()) # flatten zato, da nimamo dvojne negacije
         valuation2 = copy.deepcopy(valuation) # a je to ok kopirano
-        valuation2 = valuation2 | {Not(literal).flatten()}
+        valuation2 = valuation2.add(Not(literal).flatten())
         #valuation2[str(literal)] = False
         result2 = dpll(formula2, valuation2)
         if result2 is None:
@@ -172,4 +174,4 @@ def MOMS(formula):
 
 
 ##Test
-main("Examples/primer3.txt", "primer3.txt")
+main("Examples/tester.txt", "Examples/resitev_tester.txt")
