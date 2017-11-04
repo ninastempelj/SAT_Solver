@@ -11,13 +11,20 @@ from boolean import *
 import operator
 import copy
 
+import time
+start_time = time.time()
+
 setValuations=set()
 
 def main(vhod, izhod):
     formula = readDimacs(vhod)
     resitev = dpll(formula)
-    for element in resitev:
-        print (element)
+    koncnaResitev = str()
+    #for element in resitev:
+     #   print (element)
+
+    print ("time elapsed: {:.2f}s".format(time.time() - start_time))
+
     file = open(izhod,"w")
     file.write("bu")##TODO formula
     file.close()
@@ -68,7 +75,7 @@ def choose_literal(formula):
 
 
 def dpll(stara_formula, valuation=frozenset({})):
-    print(" začetek dpll" )
+    #print(" začetek dpll" )
     #print(valuation)
 
     changed, formula, changes = step12(stara_formula.simplify())
@@ -169,4 +176,4 @@ def MOMS(formula):
 
 
 ##Test
-main("Examples/tester.txt", "bruh.txt")
+main("Examples/sudoku_hard.txt", "bruh.txt")
