@@ -30,36 +30,34 @@ def main(vhod, izhod):
     file.write(koncnaResitev)##TODO formula
     file.close()
 
-def step12(formula, valuation):
+
+
+def step12(formula):
     """ Funkcija formulo poenostavi, vrne pa True in novo formulo, če je spremembna potrebna, sicer False in staro formulo"""
+
     changed = False
-    #print(str(valuation) + " Step12")
+    changes = set()
+    #print(" Step12")
     if isinstance(formula, Variable):
-        valuation.add(formula)
-        print(str(formula) + " dodan v step12")
-        return changed, formula.simplify(), valuation
+        return changed, formula.simplify(), formula
     if len(formula.terms) == 1:
-        return changed, formula.simplify(), valuation
+        return changed, formula.simplify(), 0
     for ali in formula.terms:
         tip = type(ali)
         if tip == Variable:
-            valuation.add(ali)
-            print(str(ali) + " dodan v step12")
-            formula.evaluate(valuation)
+            formula.simplify_by(ali)
             changed = True
+            changes.add(ali)
         elif tip == Not:
-            valuation.add(ali)
-            print(str(ali) + " dodan v step12")
-            formula.evaluate(valuation)
+            formula.simplify_by(ali)
             changed = True
+            changes.add(ali)
         elif len(ali.terms) == 1:
             for term in ali.terms:
-                print(str(term) + " dodan v step12")
-                valuation.add(term)
-                formula.evaluate(valuation)
+                formula.simplify_by(term)
                 changed = True
-    #print(valuation)
-    return changed, formula.simplify(), valuation
+                changes.add(term)
+    return changed, formula.simplify(), changes
 
 
 def random_literal(formula):
@@ -76,10 +74,14 @@ def random_literal(formula):
 def dpll(stara_formula, valuation=set()):
     #print(" začetek dpll" )
     #print(valuation)
-    changed, formula, valuation = step12(stara_formula.simplify(), valuation)
-    while changed:
-        #print("d")
-        changed, formula, valuation = step12(formula, valuation)
+
+    changed, formula, changes = step12(stara_formula.simplify())
+    if not changed:
+        valuation = valuation | changes
+    else:
+        while changed:
+            valuation = valuation | changes
+            changed, formula, changes = step12(formula)
     #print(str(formula) + " korak3 dpll")
     if formula == T:
         return valuation
@@ -88,18 +90,23 @@ def dpll(stara_formula, valuation=set()):
     literal = MOMS(formula)
 
     formula1 = copy.deepcopy(formula)
+    #print(str(type(literal)) + " " + str(type(formula1)))
     formula1.simplify_by(literal)
+    #print(str(formula1) + " po simplify dpll")
     valuation1 = copy.deepcopy(valuation) # a je to ok kopirano?
-    valuation1.add(literal)
-    print(str(literal) + " dodan v dpll 1")
+    valuation1 = valuation1 | {literal}
+    #print("zacel1")
     result1 = dpll(formula1, valuation1)
+    #print("končal1")
+    #print(str(result1) + " result1")
+    #print(str(formula) + " po result1")
     if result1 is None:
         #print("ugotovu da ne gre")
         formula2 = copy.deepcopy(formula)
         formula2.simplify_by(Not(literal).flatten()) # flatten zato, da nimamo dvojne negacije
         valuation2 = copy.deepcopy(valuation) # a je to ok kopirano
-        valuation2.add(Not(literal).flatten())
-        print(str(Not(literal)) + " dodan v dpll 2")
+        valuation2 = valuation2 | {Not(literal).flatten()}
+        #valuation2[str(literal)] = False
         result2 = dpll(formula2, valuation2)
         if result2 is None:
             return None
@@ -149,7 +156,7 @@ def MOMS(formula):
     if isinstance(formula, Variable) | isinstance(formula, Not):
         return formula
     elif not isinstance(formula, And):
-        #print(formula)
+        print(formula)
         raise NameError("Ni and v MOMSiju")
     else:
         dictFrequency ={}
@@ -170,4 +177,4 @@ def MOMS(formula):
 
 
 ##Test
-main("Examples/tester.txt", "Examples/resitev_tester.txt")
+main("Examples/tester.txt", "Examples/tester_r.txt")
