@@ -12,7 +12,8 @@ import operator
 import copy
 import time
 
-
+bruhec=set()
+print("ustvarjam bruhec")
 def main(vhod, izhod):
     start_time = time.time()
     formula = readDimacs(vhod)
@@ -29,7 +30,7 @@ def step12(formula):
     zac_cas = time.time()
     changed = False
     changes = set()
-    print(" Step12")
+    #print(" Step12")
     if isinstance(formula, Variable):
         return changed, formula.simplify(), formula
     if len(formula.terms) == 1:
@@ -41,20 +42,23 @@ def step12(formula):
             formula.simplify_by(ali)
             changed = True
             changes.add(ali)
+            #print(ali)
         elif isinstance(ali, Not):
             formula.simplify_by(ali)
             changed = True
             changes.add(ali)
+            #print(ali)
         elif len(ali.terms) == 1:
             for term in ali.terms:
                 formula.simplify_by(term)
                 changed = True
                 changes.add(term)
+    #print(changes)
     return changed, formula.simplify(), changes
 
 
 def choose_literal(formula):
-    print("izbiram spremenljivko")
+    #print("izbiram spremenljivko")
     if isinstance(formula, Variable) | isinstance(formula, Not):
         return formula
     for term in formula.terms:
@@ -67,13 +71,16 @@ def choose_literal(formula):
 
 def dpll(stara_formula, valuation={}):
     print(" začetek dpll")
+
     changed, formula, changes = step12(stara_formula.simplify())
     if not changed:
         for change in changes:
+            print(change)
             valuation[str(change)] = True
     else:
         while changed:
             for change in changes:
+                print(change)
                 valuation[str(change)] = True
             changed, formula, changes = step12(formula)
     #print(str(formula) + " korak3 dpll")
@@ -89,9 +96,9 @@ def dpll(stara_formula, valuation={}):
     #print(str(formula1) + " po simplify dpll")
     valuation1 = copy.deepcopy(valuation) # a je to ok kopirano?
     valuation1[str(literal)] = True
-    print("zacel1")
+    #print("zacel1")
     result1 = dpll(formula1, valuation1)
-    print("končal1")
+    #print("končal1")
     #print(str(result1) + " result1")
     #print(str(formula) + " po result1")
     if result1 is None:
@@ -162,5 +169,4 @@ def MOMS(formula):
 
 
 ##Test
-
 main("Examples/sudoku_easy.txt", "bruh.txt")

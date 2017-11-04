@@ -21,12 +21,13 @@ def main(vhod, izhod):
     start_time = time.time()
     formula = readDimacs(vhod)
     resitev = dpll(formula)
-    print("time elapsed: {:.2f}s".format(time.time() - start_time))
-    #for element in resitev:
-    #    print (element)
     koncnaResitev = str()
+    for element in resitev:
+        koncnaResitev = koncnaResitev + "{} ".format(element)
+    print(koncnaResitev)
+    print ("time elapsed: {:.2f}s".format(time.time() - start_time))
     file = open(izhod,"w")
-    file.write("bu")##TODO formula
+    file.write(koncnaResitev)##TODO formula
     file.close()
 
 
@@ -56,11 +57,10 @@ def step12(formula):
                 formula.simplify_by(term)
                 changed = True
                 changes.add(term)
-    return changed, formula.simplify(), set(changes)
+    return changed, formula.simplify(), changes
 
 
-def choose_literal(formula):
-    #print("izbiram spremenljivko")
+def random_literal(formula):
     if isinstance(formula, Variable) | isinstance(formula, Not):
         return formula
     for term in formula.terms:
@@ -68,10 +68,10 @@ def choose_literal(formula):
         if isinstance(term, Variable) | isinstance(term, Not):
             return term
        # print("ni oknc")
-        return choose_literal(term)
+        return random_literal(term)
 
 
-def dpll(stara_formula, valuation=frozenset({})):
+def dpll(stara_formula, valuation=set()):
     #print(" začetek dpll" )
     #print(valuation)
 
@@ -87,14 +87,14 @@ def dpll(stara_formula, valuation=frozenset({})):
         return valuation
     if formula == F:
         return None
-    literal = choose_literal(formula)
+    literal = MOMS(formula)
 
     formula1 = copy.deepcopy(formula)
     #print(str(type(literal)) + " " + str(type(formula1)))
     formula1.simplify_by(literal)
     #print(str(formula1) + " po simplify dpll")
     valuation1 = copy.deepcopy(valuation) # a je to ok kopirano?
-    valuation1 = valuation1 | frozenset({literal})
+    valuation1 = valuation1 | {literal}
     #print("zacel1")
     result1 = dpll(formula1, valuation1)
     #print("končal1")
@@ -105,7 +105,7 @@ def dpll(stara_formula, valuation=frozenset({})):
         formula2 = copy.deepcopy(formula)
         formula2.simplify_by(Not(literal).flatten()) # flatten zato, da nimamo dvojne negacije
         valuation2 = copy.deepcopy(valuation) # a je to ok kopirano
-        valuation2 = valuation2 | frozenset({Not(literal).flatten()})
+        valuation2 = valuation2 | {Not(literal).flatten()}
         #valuation2[str(literal)] = False
         result2 = dpll(formula2, valuation2)
         if result2 is None:
@@ -152,23 +152,29 @@ def readDimacs(input):
     return formula
 
 def MOMS(formula):
-    if not isinstance(formula, And):
+    existanceOf2 = False
+    if isinstance(formula, Variable) | isinstance(formula, Not):
+        return formula
+    elif not isinstance(formula, And):
+        print(formula)
         raise NameError("Ni and v MOMSiju")
     else:
         dictFrequency ={}
         for term in formula.terms:
             if len(term.terms)==2:
+                existanceOf2 = True
                 for termsek in term.terms:
                     if termsek in dictFrequency:
                         dictFrequency[termsek] += 1
                     else:
                         dictFrequency[termsek] = 1
+        if existanceOf2:
+            mostCommon = tupleFrequency = sorted(dictFrequency.items(), key=operator.itemgetter(1), reverse=True)[0][0]
+            return mostCommon
+        else:
+            return(random_literal(formula))
 
-        mostCommon = tupleFrequency = sorted(
-            dictFrequency.items(), key=operator.itemgetter(1), reverse=True)[0][0]
-        return mostCommon
 
 
 ##Test
-main("Examples/sudoku_hard.txt", "bruh.txt")
-
+main("Examples/primer3.txt", "primer3.txt")
