@@ -28,7 +28,10 @@ class Variable(Formula):
             return self.x == other
 
     def evaluate(self, values):
-        return values[self.x]
+        if self.x in values:
+            return T
+        else:
+            return F
 
     def simplify(self):
         if self.x in {T, F}:
