@@ -58,7 +58,6 @@ def step12(formula):
                 formula.simplify_by(term)
                 changed = True
                 changes.add(term)
-    #print(frozenset(changes))
     return changed, formula.simplify(), changes
 
 
