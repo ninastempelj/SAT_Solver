@@ -10,12 +10,15 @@
 from boolean import *
 import operator
 import copy
+import time
 
 setValuations=set()
 
 def main(vhod, izhod):
+    start_time = time.time()
     formula = readDimacs(vhod)
     resitev = dpll(formula)
+    print("time elapsed: {:.2f}s".format(time.time() - start_time))
     for element in resitev:
         print (element)
     file = open(izhod,"w")
@@ -170,3 +173,4 @@ def MOMS(formula):
 
 ##Test
 main("Examples/tester.txt", "bruh.txt")
+
