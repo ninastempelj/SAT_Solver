@@ -33,7 +33,7 @@ def main(vhod, izhod):
 def step12(formula, valuation):
     """ Funkcija formulo poenostavi, vrne pa True in novo formulo, če je spremembna potrebna, sicer False in staro formulo"""
     changed = False
-    print(str(valuation) + " Step12")
+    #print(str(valuation) + " Step12")
     if isinstance(formula, Variable):
         valuation.add(formula)
         print(str(formula) + " dodan v step12")
@@ -58,6 +58,7 @@ def step12(formula, valuation):
                 valuation.add(term)
                 formula.evaluate(valuation)
                 changed = True
+    #print(valuation)
     return changed, formula.simplify(), valuation
 
 
@@ -77,7 +78,7 @@ def dpll(stara_formula, valuation=set()):
     #print(valuation)
     changed, formula, valuation = step12(stara_formula.simplify(), valuation)
     while changed:
-        print(formula)
+        #print("d")
         changed, formula, valuation = step12(formula, valuation)
     #print(str(formula) + " korak3 dpll")
     if formula == T:
@@ -87,23 +88,18 @@ def dpll(stara_formula, valuation=set()):
     literal = MOMS(formula)
 
     formula1 = copy.deepcopy(formula)
-    #print(str(type(literal)) + " " + str(type(formula1)))
     formula1.simplify_by(literal)
-    #print(str(formula1) + " po simplify dpll")
     valuation1 = copy.deepcopy(valuation) # a je to ok kopirano?
-    valuation1 = valuation1.add(literal)
-    #print("zacel1")
+    valuation1.add(literal)
+    print(str(literal) + " dodan v dpll 1")
     result1 = dpll(formula1, valuation1)
-    #print("končal1")
-    #print(str(result1) + " result1")
-    #print(str(formula) + " po result1")
     if result1 is None:
         #print("ugotovu da ne gre")
         formula2 = copy.deepcopy(formula)
         formula2.simplify_by(Not(literal).flatten()) # flatten zato, da nimamo dvojne negacije
         valuation2 = copy.deepcopy(valuation) # a je to ok kopirano
-        valuation2 = valuation2.add(Not(literal).flatten())
-        #valuation2[str(literal)] = False
+        valuation2.add(Not(literal).flatten())
+        print(str(Not(literal)) + " dodan v dpll 2")
         result2 = dpll(formula2, valuation2)
         if result2 is None:
             return None
@@ -153,7 +149,7 @@ def MOMS(formula):
     if isinstance(formula, Variable) | isinstance(formula, Not):
         return formula
     elif not isinstance(formula, And):
-        print(formula)
+        #print(formula)
         raise NameError("Ni and v MOMSiju")
     else:
         dictFrequency ={}
