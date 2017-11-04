@@ -28,10 +28,7 @@ class Variable(Formula):
             return self.x == other
 
     def evaluate(self, values):
-        if self in values:
-            self.x = T
-        if Not(self) in values:
-            self.x = F
+        return values[self.x]
 
     def simplify(self):
         if self.x in {T, F}:
@@ -66,11 +63,7 @@ class Not(Formula):
         return isinstance(other, Not) and self.x == other.x
 
     def evaluate(self, values):
-        if self in values:
-            self.x = F
-        if self.x in values:
-            self.x = T
-
+        return not self.x.evaluate(values)
 
     def flatten(self):
         if isinstance(self.x, Not):
@@ -124,11 +117,7 @@ class Multi(Formula):
             and self.terms == other.terms
 
     def evaluate(self, values):
-        terms = set()
-        for x in self.terms:
-            x.evaluate(values)
-            terms.add(x)
-        self.terms = frozenset(terms)
+        return self.fun(x.evaluate(values) for x in self.terms)
 
     def flatten(self):
         this = self.getClass()
