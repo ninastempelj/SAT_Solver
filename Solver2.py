@@ -12,6 +12,9 @@ import operator
 import copy
 import time
 
+import time
+start_time = time.time()
+
 setValuations=set()
 
 def main(vhod, izhod):
@@ -19,8 +22,9 @@ def main(vhod, izhod):
     formula = readDimacs(vhod)
     resitev = dpll(formula)
     print("time elapsed: {:.2f}s".format(time.time() - start_time))
-    for element in resitev:
-        print (element)
+    #for element in resitev:
+    #    print (element)
+    koncnaResitev = str()
     file = open(izhod,"w")
     file.write("bu")##TODO formula
     file.close()
@@ -38,24 +42,21 @@ def step12(formula):
     if len(formula.terms) == 1:
         return changed, formula.simplify(), 0
     for ali in formula.terms:
-        #print("korak")
-        if isinstance(ali, Variable):
+        tip = type(ali)
+        if tip == Variable:
             formula.simplify_by(ali)
             changed = True
             changes.add(ali)
-            #print(ali)
-        elif isinstance(ali, Not):
+        elif tip == Not:
             formula.simplify_by(ali)
             changed = True
             changes.add(ali)
-            #print(ali)
         elif len(ali.terms) == 1:
             for term in ali.terms:
                 formula.simplify_by(term)
                 changed = True
                 changes.add(term)
-    #print(frozenset(changes))
-    return changed, formula.simplify(), frozenset(changes)
+    return changed, formula.simplify(), set(changes)
 
 
 def choose_literal(formula):
@@ -71,19 +72,15 @@ def choose_literal(formula):
 
 
 def dpll(stara_formula, valuation=frozenset({})):
-    print(" začetek dpll" )
+    #print(" začetek dpll" )
     #print(valuation)
 
     changed, formula, changes = step12(stara_formula.simplify())
     if not changed:
         valuation = valuation | changes
-        # for change in changes:
-        #     valuation[str(change)] = True
     else:
         while changed:
             valuation = valuation | changes
-            # for change in changes:
-            #     valuation[str(change)] = True
             changed, formula, changes = step12(formula)
     #print(str(formula) + " korak3 dpll")
     if formula == T:
@@ -166,11 +163,12 @@ def MOMS(formula):
                         dictFrequency[termsek] += 1
                     else:
                         dictFrequency[termsek] = 1
-    mostCommon = tupleFrequency = sorted(
-        dictFrequency.items(), key=operator.itemgetter(1), reverse=True)[0][0]
-    return(mostCommon)
+
+        mostCommon = tupleFrequency = sorted(
+            dictFrequency.items(), key=operator.itemgetter(1), reverse=True)[0][0]
+        return mostCommon
 
 
 ##Test
-main("Examples/tester.txt", "bruh.txt")
+main("Examples/sudoku_hard.txt", "bruh.txt")
 
