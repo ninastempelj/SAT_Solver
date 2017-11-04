@@ -32,32 +32,32 @@ def main(vhod, izhod):
 
 
 
-def step12(formula):
+def step12(formula, valuation):
     """ Funkcija formulo poenostavi, vrne pa True in novo formulo, če je spremembna potrebna, sicer False in staro formulo"""
-
     changed = False
     changes = set()
     #print(" Step12")
     if isinstance(formula, Variable):
-        return changed, formula.simplify(), formula
+        valuation.add(formula)
+        return changed, formula.simplify(), valuation
     if len(formula.terms) == 1:
-        return changed, formula.simplify(), 0
+        return changed, formula.simplify(), valuation
     for ali in formula.terms:
         tip = type(ali)
         if tip == Variable:
-            formula.simplify_by(ali)
+            valuation.add(ali)
+            formula.evaluate(valuation)
             changed = True
-            changes.add(ali)
         elif tip == Not:
-            formula.simplify_by(ali)
+            valuation.add(ali)
+            formula.evaluate(valuation)
             changed = True
-            changes.add(ali)
         elif len(ali.terms) == 1:
             for term in ali.terms:
-                formula.simplify_by(term)
+                valuation.add(term)
+                formula.evaluate(valuation)
                 changed = True
-                changes.add(term)
-    return changed, formula.simplify(), changes
+    return changed, formula.simplify(), valuation
 
 
 def random_literal(formula):
@@ -74,14 +74,9 @@ def random_literal(formula):
 def dpll(stara_formula, valuation=set()):
     #print(" začetek dpll" )
     #print(valuation)
-
-    changed, formula, changes = step12(stara_formula.simplify())
-    if not changed:
-        valuation = valuation | changes
-    else:
-        while changed:
-            valuation = valuation | changes
-            changed, formula, changes = step12(formula)
+    changed, formula, valuation = step12(stara_formula.simplify(), valuation)
+    while changed:
+        changed, formula, valuation = step12(formula, valuation)
     #print(str(formula) + " korak3 dpll")
     if formula == T:
         return valuation
