@@ -10,12 +10,15 @@
 from boolean import *
 import operator
 import copy
+import time
 
 bruhec=set()
 print("ustvarjam bruhec")
 def main(vhod, izhod):
+    start_time = time.time()
     formula = readDimacs(vhod)
     print(dpll(formula))
+    print("time elapsed: {:.2f}s".format(time.time() - start_time))
     file = open(izhod,"w")
     file.write("bu")##TODO formula
     file.close()
@@ -24,7 +27,7 @@ def main(vhod, izhod):
 
 def step12(formula):
     """ Funkcija formulo poenostavi, vrne pa True in novo formulo, če je spremembna potrebna, sicer False in staro formulo"""
-
+    zac_cas = time.time()
     changed = False
     changes = set()
     #print(" Step12")
@@ -33,7 +36,8 @@ def step12(formula):
     if len(formula.terms) == 1:
         return changed, formula.simplify(), 0
     for ali in formula.terms:
-        #print("korak")
+        #print()
+        tip = type
         if isinstance(ali, Variable):
             formula.simplify_by(ali)
             changed = True
@@ -165,4 +169,4 @@ def MOMS(formula):
 
 
 ##Test
-main("Examples/tester.txt", "bruh.txt")
+main("Examples/sudoku_easy.txt", "bruh.txt")

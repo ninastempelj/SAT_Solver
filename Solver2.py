@@ -10,6 +10,7 @@
 from boolean import *
 import operator
 import copy
+import time
 
 import time
 start_time = time.time()
@@ -17,6 +18,7 @@ start_time = time.time()
 setValuations=set()
 
 def main(vhod, izhod):
+    start_time = time.time()
     formula = readDimacs(vhod)
     resitev = dpll(formula)
     koncnaResitev = str()
@@ -24,7 +26,6 @@ def main(vhod, izhod):
         koncnaResitev = koncnaResitev + "{} ".format(element)
     print(koncnaResitev)
     print ("time elapsed: {:.2f}s".format(time.time() - start_time))
-
     file = open(izhod,"w")
     file.write(koncnaResitev)##TODO formula
     file.close()
@@ -42,17 +43,15 @@ def step12(formula):
     if len(formula.terms) == 1:
         return changed, formula.simplify(), 0
     for ali in formula.terms:
-        #print("korak")
-        if isinstance(ali, Variable):
+        tip = type(ali)
+        if tip == Variable:
             formula.simplify_by(ali)
             changed = True
             changes.add(ali)
-            #print(ali)
-        elif isinstance(ali, Not):
+        elif tip == Not:
             formula.simplify_by(ali)
             changed = True
             changes.add(ali)
-            #print(ali)
         elif len(ali.terms) == 1:
             for term in ali.terms:
                 formula.simplify_by(term)
@@ -79,13 +78,9 @@ def dpll(stara_formula, valuation=set()):
     changed, formula, changes = step12(stara_formula.simplify())
     if not changed:
         valuation = valuation | changes
-        # for change in changes:
-        #     valuation[str(change)] = True
     else:
         while changed:
             valuation = valuation | changes
-            # for change in changes:
-            #     valuation[str(change)] = True
             changed, formula, changes = step12(formula)
     #print(str(formula) + " korak3 dpll")
     if formula == T:
