@@ -47,16 +47,20 @@ def step12(formula):
         if tip == Variable:
             formula.simplify_by(ali)
             changed = True
+            print(str(ali) + " dodal Variable step12")
             changes.add(ali)
         elif tip == Not:
             formula.simplify_by(ali)
             changed = True
+            print(str(ali) + " dodal Not step12")
             changes.add(ali)
         elif len(ali.terms) == 1:
             for term in ali.terms:
-                formula.simplify_by(term)
-                changed = True
-                changes.add(term)
+                if not term == T or term == F:
+                    formula.simplify_by(term)
+                    changed = True
+                    print(str(term) + " dodal term step12")
+                    changes.add(term)
     return changed, formula.simplify(), changes
 
 
@@ -94,18 +98,16 @@ def dpll(stara_formula, valuation=set()):
     formula1.simplify_by(literal)
     #print(str(formula1) + " po simplify dpll")
     valuation1 = copy.deepcopy(valuation) # a je to ok kopirano?
-    valuation1 = valuation1 | {literal}
-    #print("zacel1")
+    valuation1.add(literal)
+    print(str(literal) + "dodal v dpll2")
     result1 = dpll(formula1, valuation1)
-    #print("končal1")
-    #print(str(result1) + " result1")
-    #print(str(formula) + " po result1")
     if result1 is None:
         #print("ugotovu da ne gre")
         formula2 = copy.deepcopy(formula)
         formula2.simplify_by(Not(literal).flatten()) # flatten zato, da nimamo dvojne negacije
         valuation2 = copy.deepcopy(valuation) # a je to ok kopirano
-        valuation2 = valuation2 | {Not(literal).flatten()}
+        print(str(literal) + "dodal v dpll2")
+        valuation2.add(Not(literal).flatten())
         #valuation2[str(literal)] = False
         result2 = dpll(formula2, valuation2)
         if result2 is None:
@@ -118,8 +120,6 @@ def dpll(stara_formula, valuation=set()):
 def readDimacs(input):
     file = open(input, 'r')
     formulaAsList = []
-    #dictFrequency = {}
-
     for line in file:
         first_sign = line[0]
         if first_sign == "p" or first_sign == "c":
@@ -131,21 +131,11 @@ def readDimacs(input):
             for number in listOfNumbers:
                 if number > 0:
                     listOfVariables.append(Variable(number))
-##                    if number in dictFrequency:# Lahko nardiva tut samo en if, zarad lepše kode, ne nujno bolšega časa
-##                        dictFrequency[number] += 1
-##                    else:
-##                        dictFrequency[number] = 1
                 else:
                     number2 = abs(number)
                     listOfVariables.append(Not(Variable(number2)))
-##                    if number2 in dictFrequency:
-##                        dictFrequency[number2] += 1
-##                    else:
-##                        dictFrequency[number2] = 1
             formulaAsList.append(Or(*tuple(listOfVariables)))
     formula = And(*tuple(formulaAsList))
-    #tupleFrequency = sorted(dictFrequency.items(), key=operator.itemgetter(1), reverse=True) #Vrne seznam tuplov(spremenljivka, število ponovitev) od najpogostejših pada
-    #listFrequency = [x for (x,y) in tupleFrequency]
     file.close()
     return formula
 
@@ -174,4 +164,4 @@ def MOMS(formula):
 
 
 #main("Examples/tester.txt", "Examples/tester_r.txt")
-#main("Examples/testSudoku.txt", "Examples/testSudoku_r.txt")
+main("Examples/sudoku_easy.txt", "Examples/sudoku_easy_r.txt")

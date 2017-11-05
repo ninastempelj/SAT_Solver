@@ -162,18 +162,10 @@ class And(Multi):
     def simplify_by(self, literal):
         t = set()
         for term in self.terms:
-            #print(term)
-            if literal == Not(term).flatten():
-                #print("False")
-                t.add(F)
             if not term == literal:
-                #print("dodajam")
                 term.simplify_by(literal)
                 t.add(term)
-                #print(str(t) + " zdej bi mogu bit en več")
-        #print(str(t) + " termsi in")
         self.terms = frozenset(t)
-        #print(self.terms)
 
 
 class Or(Multi):
