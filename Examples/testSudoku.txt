@@ -1,3 +1,4 @@
+c
 c Sudoku2DIMACS
 p cnf 64 149
 1 0
