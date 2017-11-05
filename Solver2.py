@@ -173,6 +173,5 @@ def MOMS(formula):
             return(random_literal(formula))
 
 
-
-##Test
 #main("Examples/tester.txt", "Examples/tester_r.txt")
+#main("Examples/testSudoku.txt", "Examples/testSudoku_r.txt")
