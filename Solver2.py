@@ -34,36 +34,35 @@ def step12(formula):
     če je spremembna potrebna, sicer False in staro formulo"""
     changed = False
     changes = set()
-    print(formula)
-    if isinstance(formula, Variable):
+    if isinstance(formula, Variable) or isinstance(formula, Not):
         if formula.x not in {T, F}:
-        #print(str(formula) + " dodal Variable1 step12")
-            return changed, formula.simplify(), {formula}
+            return changed, T, {formula}
         else:
-            return changed, formula.simplify(), {}
+            assert False, "V step12 je prišla Variable(T ali F)!!!!!!!!!!!!!!!!!!!!"
+    if len(formula.terms) == 0:
+        return changed, formula, {}
     if len(formula.terms) == 1:
-        return changed, formula.simplify(), set()
+        return changed, T, {x for x in formula.terms}
     for ali in formula.terms:
         tip = type(ali)
-        if tip == Variable:
-            if ali.x not in {T, F}:
-                formula.simplify_by(ali)
-                changed = True
-                # print(str(ali) + " dodal Variable2 step12")
-                changes.add(ali)
-        elif tip == Not:
-            if ali.x not in {T, F}:
-                formula.simplify_by(ali)
-                changed = True
-                # print(str(ali) + " dodal Not step12")
-                changes.add(ali)
+        if tip in {Variable, Not}:
+            if ali.x in {T, F}:
+                assert False, "Formula ni poenostavljena 2!!!!!!!!!!!!!!!!  " + str(formula)
+            formula.simplify_by(ali)
+            changed = True
+            changes.add(ali)
+            return changed, formula.simplify(), changes
         elif len(ali.terms) == 1:
             for term in ali.terms:
-                if not term == T or term == F:
-                    formula.simplify_by(term)
-                    changed = True
-                    changes.add(term)
-    return changed, formula.simplify(), changes
+                if term.x in {T, F}:
+                    assert False, "Formula ni poenostavljena 2!!!!!!!!!!!!!!!!  " + str(formula)
+                formula.simplify_by(term)
+                changed = True
+                changes.add(term)
+                return changed, formula.simplify(), changes
+        elif ali in {T,F}:
+            assert False, "Formula ni bila poenostavljena!!!!!!!!!!!!!!  " + str(formula)
+    return False, formula, set()
 
 
 def random_literal(formula):
@@ -94,14 +93,14 @@ def dpll(stara_formula, valuation=set()):
     valuation1 = copy.deepcopy(valuation)
     valuation1.add(literal)
     print(str(literal) + " dodal v dpll2")
-    result1 = dpll(formula1, valuation1)
+    result1 = dpll(formula1.simplify(), valuation1)
     if result1 is None:
         formula2 = copy.deepcopy(formula)
         formula2.simplify_by(Not(literal).flatten())  # flatten zato, da nimamo dvojne negacije
         valuation2 = copy.deepcopy(valuation)
         print(str(literal) + " dodal v dpll2")
         valuation2.add(Not(literal).flatten())
-        result2 = dpll(formula2, valuation2)
+        result2 = dpll(formula2.simplify(), valuation2)
         if result2 is None:
             return None
         else:
@@ -156,6 +155,6 @@ def moms(formula):
         else:
             return random_literal(formula)
 
-
+dato = "tester"
 # main("Examples/tester.txt", "Examples/tester_r.txt")
-main("Examples/primer1.txt", "Examples/primer1_r.txt")
+main("Examples/{}.txt".format(dato), "Examples/{}_r.txt".format(dato))
