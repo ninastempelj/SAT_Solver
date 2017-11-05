@@ -1,3 +1,4 @@
+c Najbolj uporaben dokument ever!
 c resitev: -1, 2, -3
 p cnf 3 4
 1 2 0

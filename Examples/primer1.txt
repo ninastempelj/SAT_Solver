@@ -4,6 +4,7 @@ c SOURCE: Kazuo Iwama, Eiji Miyano (miyano@cscu.kyushu-u.ac.jp),
 c          and Yuichi Asahiro
 c
 c DESCRIPTION: Artifical instances from generator by source.  Generators
+c
 c              and more information in sat/contributed/iwama.
 c
 c NOTE: Not Satisfiable

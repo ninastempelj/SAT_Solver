@@ -1,4 +1,5 @@
 c The 9*9 Sudoku puzzle at 'very hard' level from the lecture
+c
 c Atom pxyn is represented by 81*(x-1)+9*(y-1)+n
 p cnf 729 12012
 79 0 
