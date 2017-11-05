@@ -38,7 +38,7 @@ class Variable(Formula):
     def simplify_by(self, literal):
         if literal == self:
             self.x = T
-        if Not(self) == literal:
+        if literal == Not(self):
             self.x = F
 
     def equiv(self, variable):
@@ -76,12 +76,12 @@ class Not(Formula):
         elif isinstance(self.x, Variable):
             return self
         else:
-            return self.flatten().simplify()
+            return self.flatten()
 
     def simplify_by(self, literal):
         if literal == self:
             self.x = F
-        if self.x == literal:
+        if literal == self.x :
             self.x = T
 
     def equiv(self, variable):
@@ -180,17 +180,6 @@ class Or(Multi):
                 term.simplify_by(literal)
                 t.add(term)
         self.terms = frozenset(t)
-
-        #t = set()
-        #for term in self.terms:
-        #    if term == literal:
-        #        t.add(T)
-        #    elif Not(term).flatten() == literal:
-        #        pass
-        #    else:
-        #        term.simplify_by(literal)
-        #        t.add(term)
-        #self.terms = frozenset(t)
 
 T = And()
 F = Or()

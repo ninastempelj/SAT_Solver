@@ -34,26 +34,29 @@ def step12(formula):
     če je spremembna potrebna, sicer False in staro formulo"""
     changed = False
     changes = set()
-    #print(formula)
+    print(formula)
     if isinstance(formula, Variable):
-        print(str(formula) + " dodal Variable1 step12")
-        return changed, formula.simplify(), {formula}
+        if formula.x not in {T, F}:
+        #print(str(formula) + " dodal Variable1 step12")
+            return changed, formula.simplify(), {formula}
+        else:
+            return changed, formula.simplify(), {}
     if len(formula.terms) == 1:
         return changed, formula.simplify(), set()
     for ali in formula.terms:
         tip = type(ali)
         if tip == Variable:
-            if ali.x not in {T,F}:
+            if ali.x not in {T, F}:
                 formula.simplify_by(ali)
                 changed = True
-                print(str(ali) + " dodal Variable2 step12")
+                # print(str(ali) + " dodal Variable2 step12")
                 changes.add(ali)
         elif tip == Not:
-            if not ali.x in {T, F}:
+            if ali.x not in {T, F}:
                 formula.simplify_by(ali)
                 changed = True
-                print(str(ali) + " dodal Not step12")
-            changes.add(ali)
+                # print(str(ali) + " dodal Not step12")
+                changes.add(ali)
         elif len(ali.terms) == 1:
             for term in ali.terms:
                 if not term == T or term == F:
@@ -90,13 +93,13 @@ def dpll(stara_formula, valuation=set()):
     formula1.simplify_by(literal)
     valuation1 = copy.deepcopy(valuation)
     valuation1.add(literal)
-    print(str(literal) + "dodal v dpll2")
+    print(str(literal) + " dodal v dpll2")
     result1 = dpll(formula1, valuation1)
     if result1 is None:
         formula2 = copy.deepcopy(formula)
         formula2.simplify_by(Not(literal).flatten())  # flatten zato, da nimamo dvojne negacije
         valuation2 = copy.deepcopy(valuation)
-        print(str(literal) + "dodal v dpll2")
+        print(str(literal) + " dodal v dpll2")
         valuation2.add(Not(literal).flatten())
         result2 = dpll(formula2, valuation2)
         if result2 is None:
@@ -155,4 +158,4 @@ def moms(formula):
 
 
 # main("Examples/tester.txt", "Examples/tester_r.txt")
-main("Examples/primer3.txt", "Examples/primer3_r.txt")
+main("Examples/primer1.txt", "Examples/primer1_r.txt")
