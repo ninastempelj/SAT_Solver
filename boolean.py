@@ -5,9 +5,9 @@ class Formula:
     def flatten(self):
         return self
 
-    def getVariable(self, mapping):
+    def get_variable(self, mapping):
         if self not in mapping:
-            mapping[self] = freshVariable()
+            mapping[self] = fresh_variable()
         return mapping[self]
 
 
@@ -15,7 +15,7 @@ class Variable(Formula):
     def __init__(self, x):
         self.x = x
 
-    def __str__(self, parentheses = False):
+    def __str__(self, parentheses=False):
         return str(self.x)
 
     def __hash__(self):
@@ -41,16 +41,13 @@ class Variable(Formula):
         if Not(self) == literal:
             self.x = F
 
-    def tseytin(self, mapping):
-        return self
-
     def equiv(self, variable):
         return And(Or(variable, Not(self)), Or(Not(variable), self))
 
 
 class Not(Formula):
     def __init__(self, x):
-        self.x = makeFormula(x)
+        self.x = make_formula(x)
         self.terms = frozenset({self.x})
 
     def __str__(self, parentheses=False):
@@ -87,18 +84,15 @@ class Not(Formula):
         if self.x == literal:
             self.x = T
 
-
-    def tseytin(self, mapping):
-        return Not(self.x.tseytin(mapping)).getVariable(mapping)
-
     def equiv(self, variable):
         return And(Or(variable, self.x), Or(Not(variable), self))
 
+
 class Multi(Formula):
     def __init__(self, *args):
-        self.terms = frozenset(makeFormula(x) for x in args)
+        self.terms = frozenset(make_formula(x) for x in args)
 
-    def __str__(self, parentheses = False):
+    def __str__(self, parentheses=False):
         if len(self.terms) == 0:
             return self.empty
         elif len(self.terms) == 1:
@@ -113,14 +107,14 @@ class Multi(Formula):
         return hash((self.connective, self.terms))
 
     def __eq__(self, other):
-        return isinstance(other, self.getClass()) \
+        return isinstance(other, self.get_class()) \
             and self.terms == other.terms
 
     def evaluate(self, values):
         return self.fun(x.evaluate(values) for x in self.terms)
 
     def flatten(self):
-        this = self.getClass()
+        this = self.get_class()
         terms = (x.flatten() for x in self.terms)
         out = this(*sum([list(x.terms) if isinstance(x, this)
                          else [x] for x in terms], []))
@@ -131,28 +125,22 @@ class Multi(Formula):
 
     def simplify(self):
         terms = [x.simplify() for x in self.terms]
-        const = self.getDualClass()()
-        #print(const)
-        #print(self)
+        const = self.get_dual_class()()
         if const in terms:
-            #print("je")
             return const
         # TODO: če sta dva enake vrednosti, enega vržemo ven
-        return self.getClass()(*terms).flatten()
+        return self.get_class()(*terms).flatten()
 
-    def tseytin(self, mapping):
-        return self.getClass()(*(x.tseytin(mapping)
-                               for x in self.terms)).getVariable(mapping)
 
 class And(Multi):
     empty = "T"
     connective = r" /\ "
     fun = all
 
-    def getClass(self):
+    def get_class(self):
         return And
 
-    def getDualClass(self):
+    def get_dual_class(self):
         return Or
 
     def equiv(self, variable):
@@ -173,10 +161,10 @@ class Or(Multi):
     connective = r" \/ "
     fun = any
 
-    def getClass(self):
+    def get_class(self):
         return Or
 
-    def getDualClass(self):
+    def get_dual_class(self):
         return And
 
     def equiv(self, variable):
@@ -188,19 +176,27 @@ class Or(Multi):
         for term in self.terms:
             if term == literal:
                 t.add(T)
-                #print("isto")
-            elif Not(term).flatten() == literal :
-                pass
-            else:
+            elif not Not(term).flatten() == literal:
                 term.simplify_by(literal)
                 t.add(term)
-                #print("dodajam")
         self.terms = frozenset(t)
+
+        #t = set()
+        #for term in self.terms:
+        #    if term == literal:
+        #        t.add(T)
+        #    elif Not(term).flatten() == literal:
+        #        pass
+        #    else:
+        #        term.simplify_by(literal)
+        #        t.add(term)
+        #self.terms = frozenset(t)
 
 T = And()
 F = Or()
 
-def makeFormula(x):
+
+def make_formula(x):
     if isinstance(x, Formula):
         return x
     else:
@@ -208,13 +204,8 @@ def makeFormula(x):
 
 counter = 0
 
-def freshVariable():
+
+def fresh_variable():
     global counter
     counter += 1
     return Variable(("__", counter))
-
-def tseytin(formula, mapping = None):
-    if mapping is None:
-        mapping = {}
-    f = formula.tseytin(mapping)
-    return And(f, *(k.equiv(v) for k, v in mapping.items())).flatten()
