@@ -164,6 +164,7 @@ def moms(formula):
         else:
             return random_literal(formula)
 
+
 def moms1(formula):
     existence_of_2 = False
     if isinstance(formula, Variable) | isinstance(formula, Not):
@@ -190,7 +191,7 @@ def moms1(formula):
             most_common = sorted(dict_frequency3.items(), key=operator.itemgetter(1), reverse=True)[0][0]
         return most_common
 
-dato = "tester1"
+dato = "graf_zelo_povezan"
 #main("Examples/tester.txt", "Examples/tester_r.txt")
 main("Examples/{}.txt".format(dato), "Examples/{}_r.txt".format(dato))
 

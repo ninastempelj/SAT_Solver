@@ -94,7 +94,7 @@ def dpll(stara_formula, valuation=set()):
     if formula == F:
         #print("tuuuukiiii")
         return None
-    literal = moms(formula)
+    literal = moms1(formula)
     #print(str(literal)+"momsi je zbral")
 
     formula1 = copy.deepcopy(formula)
@@ -165,9 +165,36 @@ def moms(formula):
         else:
             return random_literal(formula)
 
+
+def moms1(formula):
+    existence_of_2 = False
+    if isinstance(formula, Variable) | isinstance(formula, Not):
+        return formula
+    elif not isinstance(formula, And):
+        print(formula)
+        raise NameError("Ni and v MOMSiju")
+    else:
+        dict_frequency2 = {}
+        slovar = dict_frequency3 = {}
+        for term in formula.terms:
+            if len(term.terms) == 2:
+                existence_of_2 = True
+                slovar = dict_frequency2
+            for termsek in term.terms:
+                if termsek in slovar:
+                    slovar[termsek] += 1
+                else:
+                    slovar[termsek] = 1
+            slovar = dict_frequency3
+        if existence_of_2:
+            most_common = sorted(dict_frequency2.items(), key=operator.itemgetter(1), reverse=True)[0][0]
+        else:
+            most_common = sorted(dict_frequency3.items(), key=operator.itemgetter(1), reverse=True)[0][0]
+        return most_common
+
 if command_line:
     print(main(vhod, izhod))
 
-#dato = "sudoku_easy"
+dato = "sudoku_easy"
 # main("Examples/tester.txt", "Examples/tester_r.txt")
-#main("Examples/{}.txt".format(dato), "Examples/{}_r.txt".format(dato))
+main("Examples/{}.txt".format(dato), "Examples/{}_r.txt".format(dato))
