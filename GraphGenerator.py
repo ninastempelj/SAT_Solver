@@ -16,6 +16,7 @@ def GraphGenerator(N,C, izhodna):
     graphCoulouring2DIMACS(seznam, C, izhodna) #itcreates a DIMACS file
     return seznam
 
-GraphGenerator(38,10, "Grafi/graf11.txt")
+#Test:
+# GraphGenerator(38,10, "Graphs/graf.txt")
 
 

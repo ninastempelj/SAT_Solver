@@ -13,4 +13,4 @@ def testirej(imePrimera, rezultati, steviloPonovitev):
     print ("fertik")
 
 #Test
-testirej("Grafi/graf4.txt", "Grafi/rezultati_testiranj.txt",1)
+#testirej("Graphs/graf4.txt", "Graphs/rezultati_testiranj.txt",1)
