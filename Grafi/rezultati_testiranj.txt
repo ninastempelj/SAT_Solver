@@ -1,0 +1,22 @@
+Grafi/graf1
+time elapsed: 3.42s
+Grafi/graf2
+time elapsed: 110.55s
+Grafi/graf3
+time elapsed: 26.82s
+Grafi/graf6
+time elapsed: 76.13s
+Grafi/graf7
+time elapsed: 95.93s
+Grafi/graf8
+time elapsed: 37.51s
+Grafi/graf9
+time elapsed: 25.38s
+Grafi/graf10
+time elapsed: 54.25s
+Grafi/graf11
+time elapsed: 44.41s
+Grafi/graf10
+time elapsed: 52.18s
+time elapsed: 56.60s
+time elapsed: 53.76s

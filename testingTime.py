@@ -10,6 +10,7 @@ def testirej(imePrimera, rezultati, steviloPonovitev):
         main(imePrimera, imeResitev)
         file.write("time elapsed: {:.2f}s\n".format(time.time() - start_time))
     file.close()
+    print ("fertik")
 
 #Test
-#testirej("Examples/sudoku_mali_boljsijadsjkkas.txt", "Examples/rezultati_testiranj_grafi.txt",1)
+testirej("Grafi/graf4.txt", "Grafi/rezultati_testiranj.txt",1)
