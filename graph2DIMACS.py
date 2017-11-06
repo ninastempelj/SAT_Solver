@@ -19,6 +19,10 @@ def graphCoulouring2DIMACS(G, k, izhodna):
             for j in range(k):
                 vrstica = "-{0} -{1} ".format(slovar[(i,j)],slovar[(ii,j)]) + "0"
                 seznamVrstic.append(vrstica+"\n")
+    seznamVrstic.append("{} 0\n".format(slovar[(0,0)])) #first vertex is first colour
+    if G[0] !=[]:
+        seznamVrstic.append("{} 0\n".format(slovar[(G[0][0],1)])) #first neighbour of the first vertex is second colour
+
     numbVariables = len(slovar)
     numbTerms = len(seznamVrstic)
     file = open(izhodna, "w")
@@ -168,4 +172,6 @@ graf_zelo_povezan = [
     [0, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 18, 19]
     ]
 
-slovar = graphCoulouring2DIMACS(graf_zelo_povezan, 21, "Examples/graf1.txt")
+#graphCoulouring2DIMACS(graf_zelo_povezan, 21, "Examples/graf1.txt")
+#graphCoulouring2DIMACS(graf_veliki, 21, "Examples/graf11.txt")
+#graphCoulouring2DIMACS(graf_srednji, 10, "Examples/graf111.txt")
