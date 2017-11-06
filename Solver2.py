@@ -24,9 +24,13 @@ def main(vhod, izhod):
     start_time = time.time()
     formula = read_dimacs(vhod)
     resitev = dpll(formula)
-    koncna_resitev = str()
-    for element in resitev:
-        koncna_resitev += "{} ".format(element)
+
+    if resitev is None:
+        koncna_resitev = "0"
+    else:
+        koncna_resitev = str()
+        for element in resitev:
+            koncna_resitev += "{} ".format(element)
     print(koncna_resitev)
     print("time elapsed: {:.2f}s".format(time.time() - start_time))
     file = open(izhod, "w")
@@ -94,8 +98,7 @@ def dpll(stara_formula, valuation=set()):
     if formula == F:
         #print("tuuuukiiii")
         return None
-    literal = moms1(formula)
-    #print(str(literal)+"momsi je zbral")
+    literal = moms(formula)
 
     formula1 = copy.deepcopy(formula)
     formula1.simplify_by(literal)
@@ -167,13 +170,6 @@ def moms(formula):
 
 
 def moms1(formula):
-    existence_of_2 = False
-    if isinstance(formula, Variable) | isinstance(formula, Not):
-        return formula
-    elif not isinstance(formula, And):
-        print(formula)
-        raise NameError("Ni and v MOMSiju")
-    else:
         dict_frequency2 = {}
         slovar = dict_frequency3 = {}
         for term in formula.terms:
@@ -191,6 +187,37 @@ def moms1(formula):
         else:
             most_common = sorted(dict_frequency3.items(), key=operator.itemgetter(1), reverse=True)[0][0]
         return most_common
+
+def moms2(formula):
+    existence_of_2 = False
+    if isinstance(formula, Variable) | isinstance(formula, Not):
+        return formula
+    elif not isinstance(formula, And):
+        print(formula)
+        raise NameError("Ni and v MOMSiju")
+    else:
+        dict_frequency = {}
+        for term in formula.terms:
+            if len(term.terms) == 2:
+                existence_of_2 = True
+                for termsek in term.terms:
+                    if isinstance(termsek, Variable):
+                        if termsek in dict_frequency:
+                            dict_frequency[termsek] += 1
+                        else:
+                            dict_frequency[termsek] = 1
+                    else:
+                        if Not(termsek).flatten() in dict_frequency:
+                            dict_frequency[Not(termsek).flatten()] += 1
+                        else:
+                            dict_frequency[Not(termsek).flatten()] = 1
+
+
+        if existence_of_2:
+            most_common = sorted(dict_frequency.items(), key=operator.itemgetter(1), reverse=True)[0][0]
+            return most_common
+        else:
+            return random_literal(formula)
 
 if command_line:
     print(main(vhod, izhod))

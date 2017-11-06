@@ -1,8 +1,7 @@
-from Solver2 import *
+from Solver import *
 
 def testirej(imePrimera, rezultati, steviloPonovitev):
     ime = imePrimera.split(".")[0]
-    print(ime)
     imeResitev = "{}_resitev.txt".format(ime)
     file = open(rezultati, "a")
     file.write("{}\n".format(ime))
@@ -11,7 +10,6 @@ def testirej(imePrimera, rezultati, steviloPonovitev):
         main(imePrimera, imeResitev)
         file.write("time elapsed: {:.2f}s\n".format(time.time() - start_time))
     file.close()
-    print("končal sem")
 
 #Test
-testirej("Examples/graf2.txt", "Examples/rezultati_testiranj2.txt",1)
+    # testirej("Examples/primer1.txt", "Examples/rezultati_testiranj000.txt",1)
