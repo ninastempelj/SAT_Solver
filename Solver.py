@@ -57,21 +57,17 @@ def step12(formula):
         tip = type(ali)
         if tip in {Variable, Not}:
             if ali.x in {T, F}:
-                assert False, "Formula ni poenostavljena" + str(formula)
-            #formula.simplify_by(ali)
+                assert False, "Formula ni poenostavljena " + str(formula)
             changed = True
-            #print("dodajam2 " + str(ali))
             changes.add(ali)
         elif len(ali.terms) == 1:
             for term in ali.terms:
                 if term.x in {T, F}:
-                    assert False, "Formula ni poenostavljena 2!!!!!!!!!!!!!!!!  " + str(formula)
-                #formula.simplify_by(term)
+                    assert False, "Formula ni poenostavljena " + str(formula)
                 changed = True
-                #print("dodajam2 " + str(ali))
                 changes.add(term)
         elif ali in {T,F}:
-            assert False, "Formula ni bila poenostavljena!!!!!!!!!!!!!!  " + str(formula)
+            assert False, "Formula ni bila poenostavljena " + str(formula)
     return changed, formula, changes
 
 
@@ -109,19 +105,17 @@ def dpll(stara_formula, valuation=set()):
     formula1.simplify_by(literal)
     valuation1 = copy.deepcopy(valuation)
     valuation1.add(literal)
-    #print(str(literal) + " dodal v dpll2")
+
     result1 = dpll(formula1.simplify(), valuation1)
+
     if result1 is None:
         formula2 = copy.deepcopy(formula)
-        formula2.simplify_by(Not(literal).flatten())  # flatten zato, da nimamo dvojne negacije
+        formula2.simplify_by(Not(literal).flatten())
         valuation2 = copy.deepcopy(valuation)
-        #print(str(literal) + " dodal v dpll2")
         valuation2.add(Not(literal).flatten())
+
         result2 = dpll(formula2.simplify(), valuation2)
-        if result2 is None:
-            return None
-        else:
-            return result2
+        return result2
     else:
         return result1
 
@@ -155,7 +149,7 @@ def moms(formula):
         return formula
     elif not isinstance(formula, And):
         print(formula)
-        raise NameError("Ni and v MOMSiju")
+        raise NameError("V Momsiju ni And")
     else:
         dict_frequency = {}
         for term in formula.terms:
@@ -198,11 +192,43 @@ def moms1(formula):
             most_common = sorted(dict_frequency3.items(), key=operator.itemgetter(1), reverse=True)[0][0]
         return most_common
 
+
+def moms2(formula):
+    existence_of_2 = False
+    if isinstance(formula, Variable) | isinstance(formula, Not):
+        return formula
+    elif not isinstance(formula, And):
+        print(formula)
+        raise NameError("Ni and v MOMSiju")
+    else:
+        dict_frequency = {}
+        for term in formula.terms:
+            if len(term.terms) == 2:
+                existence_of_2 = True
+                for termsek in term.terms:
+                    if isinstance(termsek, Variable):
+                        if termsek in dict_frequency:
+                            dict_frequency[termsek] += 1
+                        else:
+                            dict_frequency[termsek] = 1
+                    else:
+                        if Not(termsek).flatten() in dict_frequency:
+                            dict_frequency[Not(termsek).flatten()] += 1
+                        else:
+                            dict_frequency[Not(termsek).flatten()] = 1
+
+
+        if existence_of_2:
+            most_common = sorted(dict_frequency.items(), key=operator.itemgetter(1), reverse=True)[0][0]
+            return most_common
+        else:
+            return random_literal(formula)
+
 if command_line:
     print(main(vhod, izhod))
 
 
-dato = "tester1"
+#dato = "tester1"
 #main("Examples/tester.txt", "Examples/tester_r.txt")
-main("Examples/{}.txt".format(dato), "Examples/{}_r.txt".format(dato))
+#main("Examples/{}.txt".format(dato), "Examples/{}_r.txt".format(dato))
 

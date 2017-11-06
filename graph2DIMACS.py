@@ -1,7 +1,8 @@
-def graphCoulouring2DIMACS(G,k, izhodna):
+def graphCoulouring2DIMACS(G, k, izhodna):
+    ##G is list of lists of connections of certain vertex, k is the number of colours, izhodna will be the new DIMACS file
     seznamVrstic = []
-    
     slovar = {}
+
     for i in range(len(G)):
         for j in range(k):
             slovar[(i,j)]=len(slovar)+1 #naredi slovar

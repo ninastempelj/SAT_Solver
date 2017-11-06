@@ -1,6 +1,7 @@
 def sudoku2DIMACS(N,zacetne,izhodna):
-    #N = velikost sudokuja
-    #zacetne so podane v tuplih (vrstica, stolpec, vpisana stevilka)
+    #N is size of sudoku,
+    # zacetne is list of tuples(i,j,k) (i=row, j=column, k =number) that show the starting state
+    #izhodna will be the new DIMACS file
     slovar = {}
     seznamVrstic = []
     for i in range(N): #vrstica
