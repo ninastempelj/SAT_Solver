@@ -21,7 +21,7 @@ if len(sys.argv) == 3:
 
 
 def main(vhod, izhod):
-    #start_time = time.time()
+    start_time = time.time()
     formula = read_dimacs(vhod)
     resitev = dpll(formula)
 
@@ -32,7 +32,7 @@ def main(vhod, izhod):
         for element in resitev:
             koncna_resitev += "{} ".format(element)
 
-    #print("time elapsed: {:.2f}s".format(time.time() - start_time))
+    print("time elapsed: {:.2f}s".format(time.time() - start_time))
     file = open(izhod, "w")
     file.write(koncna_resitev)
     file.close()
@@ -228,7 +228,7 @@ if command_line:
     print(main(vhod, izhod))
 
 
-#dato = "tester1"
+#dato = "graf2"
 #main("Examples/tester.txt", "Examples/tester_r.txt")
-#main("Examples/{}.txt".format(dato), "Examples/{}_r.txt".format(dato))
+#print(main("Examples/{}.txt".format(dato), "Examples/{}_r.txt".format(dato)))
 

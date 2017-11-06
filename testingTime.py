@@ -12,4 +12,4 @@ def testirej(imePrimera, rezultati, steviloPonovitev):
     file.close()
 
 #Test
-    # testirej("Examples/primer1.txt", "Examples/rezultati_testiranj000.txt",1)
+#testirej("Examples/sudoku_mali_boljsijadsjkkas.txt", "Examples/rezultati_testiranj_grafi.txt",1)
