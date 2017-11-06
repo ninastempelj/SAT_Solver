@@ -164,7 +164,33 @@ def moms(formula):
         else:
             return random_literal(formula)
 
-dato = "primer2"
+def moms1(formula):
+    existence_of_2 = False
+    if isinstance(formula, Variable) | isinstance(formula, Not):
+        return formula
+    elif not isinstance(formula, And):
+        print(formula)
+        raise NameError("Ni and v MOMSiju")
+    else:
+        dict_frequency2 = {}
+        slovar = dict_frequency3 = {}
+        for term in formula.terms:
+            if len(term.terms) == 2:
+                existence_of_2 = True
+                slovar = dict_frequency2
+            for termsek in term.terms:
+                if termsek in slovar:
+                    slovar[termsek] += 1
+                else:
+                    slovar[termsek] = 1
+            slovar = dict_frequency3
+        if existence_of_2:
+            most_common = sorted(dict_frequency2.items(), key=operator.itemgetter(1), reverse=True)[0][0]
+        else:
+            most_common = sorted(dict_frequency3.items(), key=operator.itemgetter(1), reverse=True)[0][0]
+        return most_common
+
+dato = "tester1"
 #main("Examples/tester.txt", "Examples/tester_r.txt")
 main("Examples/{}.txt".format(dato), "Examples/{}_r.txt".format(dato))
 
