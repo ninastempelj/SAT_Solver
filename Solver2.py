@@ -11,8 +11,13 @@ from boolean import *
 import operator
 import copy
 import time
+import sys
 
-setValuations = set()
+command_line = False
+if len(sys.argv) == 3:
+    vhod = sys.argv[1]
+    izhod = sys.argv[2]
+    command_line = True
 
 
 def main(vhod, izhod):
@@ -27,6 +32,7 @@ def main(vhod, izhod):
     file = open(izhod, "w")
     file.write(koncna_resitev)
     file.close()
+    return koncna_resitev
 
 
 def step12(formula):
@@ -40,7 +46,7 @@ def step12(formula):
         else:
             assert False, "V step12 je prišla Variable(T ali F)!!!!!!!!!!!!!!!!!!!!"
     if len(formula.terms) == 0:
-        return changed, formula, {}
+        return changed, formula, set()
     if len(formula.terms) == 1:
         return changed, T, {x for x in formula.terms}
     for ali in formula.terms:
@@ -82,26 +88,30 @@ def dpll(stara_formula, valuation=set()):
         while changed:
             valuation = valuation | changes
             changed, formula, changes = step12(formula)
+        valuation = valuation | changes
     if formula == T:
         return valuation
     if formula == F:
+        #print("tuuuukiiii")
         return None
     literal = moms(formula)
+    #print(str(literal)+"momsi je zbral")
 
     formula1 = copy.deepcopy(formula)
     formula1.simplify_by(literal)
     valuation1 = copy.deepcopy(valuation)
     valuation1.add(literal)
-    print(str(literal) + " dodal v dpll2")
+    #print(str(literal) + " dodal v dpll2")
     result1 = dpll(formula1.simplify(), valuation1)
     if result1 is None:
         formula2 = copy.deepcopy(formula)
         formula2.simplify_by(Not(literal).flatten())  # flatten zato, da nimamo dvojne negacije
         valuation2 = copy.deepcopy(valuation)
-        print(str(literal) + " dodal v dpll2")
+        #print(str(literal) + " dodal v dpll2 hu")
         valuation2.add(Not(literal).flatten())
         result2 = dpll(formula2.simplify(), valuation2)
         if result2 is None:
+            #print("tukiiiii")
             return None
         else:
             return result2
@@ -155,6 +165,9 @@ def moms(formula):
         else:
             return random_literal(formula)
 
-dato = "tester"
+if command_line:
+    print(main(vhod, izhod))
+
+#dato = "sudoku_easy"
 # main("Examples/tester.txt", "Examples/tester_r.txt")
-main("Examples/{}.txt".format(dato), "Examples/{}_r.txt".format(dato))
+#main("Examples/{}.txt".format(dato), "Examples/{}_r.txt".format(dato))

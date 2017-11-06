@@ -14,4 +14,4 @@ def testirej(imePrimera, rezultati, steviloPonovitev):
     print("končal sem")
 
 #Test
-    # testirej("Examples/tester.txt", "Examples/rezultati_testiranj.txt",1)
+testirej("Examples/graf2.txt", "Examples/rezultati_testiranj2.txt",1)
