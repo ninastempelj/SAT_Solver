@@ -36,6 +36,7 @@ def main(vhod, izhod):
     file = open(izhod, "w")
     file.write(koncna_resitev)
     file.close()
+    print("rešitev je pravilna " + formula.evaluate(resitev))
     return formula.evaluate(resitev)
 
 
@@ -231,6 +232,6 @@ if command_line:
 
 
 #dato = "graf2"
-f = main("Examples/sudoku_mini.txt", "Examples/sudoku_mini_r.txt")
+#f = main("Examples/sudoku_mini.txt", "Examples/sudoku_mini_r.txt")
 #print(main("Examples/{}.txt".format(dato), "Examples/{}_r.txt".format(dato)))
-print(f)
+#print(f)
