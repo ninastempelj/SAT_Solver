@@ -7,11 +7,13 @@
 #  - assume chosen l, repeat algorithm
 # - if fail: assume ~l, repeat algorithm
 ######################
-from boolean import *
+from booleantest import *
 import operator
 import copy
 import time
 import sys
+
+#sys.setrecursionlimit(10000)
 
 command_line = False
 if len(sys.argv) == 3:
@@ -83,7 +85,7 @@ def random_literal(formula):
 
 
 def dpll(stara_formula, valuation=set()):
-    changed, formula, changes = step12(stara_formula.simplify())
+    changed, formula, changes = step12(stara_formula)
     if not changed:
         valuation = valuation | changes
     else:
@@ -94,7 +96,7 @@ def dpll(stara_formula, valuation=set()):
                 if formula in {T, F}:
                     break
                 valuation.add(literal)
-            changed, formula, changes = step12(formula.simplify())
+            changed, formula, changes = step12(formula)
         valuation = valuation | changes
 
     if formula == T:
@@ -108,7 +110,7 @@ def dpll(stara_formula, valuation=set()):
     valuation1 = copy.deepcopy(valuation)
     valuation1.add(literal)
 
-    result1 = dpll(formula1.simplify(), valuation1)
+    result1 = dpll(formula1, valuation1)
 
     if result1 is None:
         formula2 = copy.deepcopy(formula)
@@ -116,7 +118,7 @@ def dpll(stara_formula, valuation=set()):
         valuation2 = copy.deepcopy(valuation)
         valuation2.add(Not(literal).flatten())
 
-        result2 = dpll(formula2.simplify(), valuation2)
+        result2 = dpll(formula2, valuation2)
         return result2
     else:
         return result1
@@ -230,7 +232,7 @@ if command_line:
     print(main(vhod, izhod))
 
 
-#dato = "graftester"
-#print(main("Graphs/graftester.txt", "Graphs/tester_resitev.txt"))
-#print(main("Examples/{}.txt".format(dato), "Examples/{}_r.txt".format(dato)))
+dato = ""
+print(main("Graphs/graf4.txt", "Graphs/graf4_resitev.txt"))
+#main("Examples/{}.txt".format(dato), "Examples/{}_r.txt".format(dato))
 

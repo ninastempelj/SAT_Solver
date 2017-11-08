@@ -75,6 +75,10 @@ class Not(Formula):
             return self
 
     def simplify(self, literal):
+        if self.x ==T:
+            return F
+        if self.x == F:
+            return T
         return Not(self.x.simplify(literal))
 
     def equiv(self, variable):
@@ -131,15 +135,16 @@ class And(Multi):
         return And(Or(variable, *(Not(x).flatten() for x in self.terms)),
                    *(Or(Not(variable), x) for x in self.terms))
 
-    def simplify(self, literal=Or()):
+    def simplify(self, literal):
         terms = []
         for term in self.terms:
+            term = term.simplify(literal)
             if term == F:
                 return F
             elif term == T:
                 pass
             elif not term == literal:
-                term.simplify(literal)
+                term = term.simplify(literal)
                 if term == F:
                     return F
                 elif term == T:
@@ -164,9 +169,10 @@ class Or(Multi):
         return And(Or(Not(variable), *self.terms),
                    *(Or(variable, Not(x)) for x in self.terms))
 
-    def simplify(self, literal=And()):
+    def simplify(self, literal):
         terms = []
         for term in self.terms:
+            term = term.simplify(literal)
             if term == T:
                 return T
             elif term == F:
