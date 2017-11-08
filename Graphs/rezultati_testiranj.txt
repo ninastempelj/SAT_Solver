@@ -1,0 +1,13 @@
+Graphs/graf1
+time elapsed: 0.77s
+time elapsed: 0.80s
+Graphs/graf1
+time elapsed: 0.78s
+Graphs/graf2
+time elapsed: 10.47s
+Graphs/graf3
+time elapsed: 27.77s
+Graphs/graf4
+time elapsed: 65.30s
+Graphs/graf5
+time elapsed: 272.40s

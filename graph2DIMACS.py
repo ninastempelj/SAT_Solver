@@ -1,11 +1,12 @@
 def graphCoulouring2DIMACS(G, k, izhodna):
-    ##G is list of lists of connections of certain vertex, k is the number of colours, izhodna will be the new DIMACS file
+    ##G is list of sets of connections of certain vertex, k is the number of colours, izhodna will be the new DIMACS file
     seznamVrstic = []
     slovar = {}
 
     for i in range(len(G)):
         for j in range(k):
             slovar[(i,j)]=len(slovar)+1 #naredi slovar
+    seznamVrstic.append("{} 0\n".format(slovar[(0,0)])) #BŠS: first vertex is first colour
     for i in range(len(G)):
         vrstica = "0"
         for j in range(k):
@@ -19,23 +20,23 @@ def graphCoulouring2DIMACS(G, k, izhodna):
             for j in range(k):
                 vrstica = "-{0} -{1} ".format(slovar[(i,j)],slovar[(ii,j)]) + "0"
                 seznamVrstic.append(vrstica+"\n")
-    seznamVrstic.append("{} 0\n".format(slovar[(0,0)])) #first vertex is first colour
-    if G[0] !=[]:
-        seznamVrstic.append("{} 0\n".format(slovar[(G[0][0],1)])) #first neighbour of the first vertex is second colour
+    
 
     numbVariables = len(slovar)
     numbTerms = len(seznamVrstic)
     file = open(izhodna, "w")
     file.write("c Graph Colouring to DIMACS\n")
+    file.write("c Number of vertices: {0} Number of colours: {1}".format(len(G), k))
     file.write("p cnf {0} {1}\n".format(numbVariables, numbTerms))
     for vrstica in seznamVrstic:
         file.write(vrstica)
     file.close()
-    #return slovar
+    #print (slovar)
 
 ##Test:
-graf1=[[1,3],[0,2,3],[1,4],[0,1,4],[2,3]]
-
+   
+#graf1=[{1,3},{0,2,3},{1,4},{0,1,4},{2,3}]
+#graphCoulouring2DIMACS(graf1, 4, "Graphs/graftester1.txt")
 
 graf_veliki = [
     [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 15, 16, 17, 18, 19, 20],
@@ -176,5 +177,5 @@ graf_zelo_povezan = [
     ]
 
 #graphCoulouring2DIMACS(graf_zelo_povezan, 21, "Examples/graf1.txt")
-graphCoulouring2DIMACS(graf_veliki2, 15, "Examples/graf1111.txt")
+#graphCoulouring2DIMACS(graf_veliki2, 15, "Examples/graf1111.txt")
 #graphCoulouring2DIMACS(graf_srednji, 10, "Examples/graf111.txt")
