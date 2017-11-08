@@ -89,8 +89,8 @@ def dpll(stara_formula, valuation=set()):
     else:
         while changed:
             for literal in changes:
-                formula.simplify_by(literal)
-                formula = formula.simplify()
+                #formula.simplify_by(literal)
+                formula = formula.simplify(literal)
                 if formula in {T, F}:
                     break
                 valuation.add(literal)
@@ -104,7 +104,7 @@ def dpll(stara_formula, valuation=set()):
     literal = moms(formula)
 
     formula1 = copy.deepcopy(formula)
-    formula1.simplify_by(literal)
+    formula1 = formula1.simplify(literal) #simplify_by
     valuation1 = copy.deepcopy(valuation)
     valuation1.add(literal)
 
@@ -112,7 +112,7 @@ def dpll(stara_formula, valuation=set()):
 
     if result1 is None:
         formula2 = copy.deepcopy(formula)
-        formula2.simplify_by(Not(literal).flatten())
+        formula2 = formula2.simplify(Not(literal).flatten())#simplify_by
         valuation2 = copy.deepcopy(valuation)
         valuation2.add(Not(literal).flatten())
 
