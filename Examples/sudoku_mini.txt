@@ -1,5 +1,4 @@
 c Mini 4*4 Sudoku from lecture
-c
 c Atom pxyn is represented by 16*(x-1)+4*(y-1)+n
 p cnf 64 453
 1 0 
