@@ -36,7 +36,7 @@ def main(vhod, izhod):
     file = open(izhod, "w")
     file.write(koncna_resitev)
     file.close()
-    print("rešitev je pravilna " + formula.evaluate(resitev))
+    print("rešitev je pravilna " + str(formula.evaluate(resitev)))
     return formula.evaluate(resitev)
 
 
