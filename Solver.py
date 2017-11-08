@@ -89,6 +89,8 @@ def dpll(stara_formula, valuation=set()):
     else:
         while changed:
             for literal in changes:
+                if type(formula) ==  Variable:
+                    valuation.add(copy.deepcopy(literal))
                 formula.simplify_by(literal)
                 formula = formula.simplify()
                 if formula in {T, F}:
@@ -231,6 +233,6 @@ if command_line:
 
 
 #dato = "graftester"
-#print(main("Graphs/graftester.txt", "Graphs/tester_resitev.txt"))
+#print(main("Examples/sudoku_mini.txt", "Examples/sudoku_mini_resitev_test.txt"))
 #print(main("Examples/{}.txt".format(dato), "Examples/{}_r.txt".format(dato)))
 
