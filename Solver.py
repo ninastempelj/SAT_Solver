@@ -36,7 +36,7 @@ def main(vhod, izhod):
     file = open(izhod, "w")
     file.write(koncna_resitev)
     file.close()
-    return(koncna_resitev)
+    return formula.evaluate(resitev)
 
 
 def step12(formula):
@@ -87,6 +87,8 @@ def dpll(stara_formula, valuation=set()):
     else:
         while changed:
             for literal in changes:
+                if type(formula) ==  Variable:
+                    valuation.add(copy.deepcopy(literal))
                 formula.simplify_by(literal)
                 formula = formula.simplify()
                 if formula in {T, F}:
@@ -229,6 +231,6 @@ if command_line:
 
 
 #dato = "graf2"
-#main("Examples/tester.txt", "Examples/tester_r.txt")
+f = main("Examples/sudoku_mini.txt", "Examples/sudoku_mini_r.txt")
 #print(main("Examples/{}.txt".format(dato), "Examples/{}_r.txt".format(dato)))
-
+print(f)
