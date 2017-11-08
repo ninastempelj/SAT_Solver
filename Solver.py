@@ -24,20 +24,21 @@ def main(vhod, izhod):
     start_time = time.time()
     formula = read_dimacs(vhod)
     resitev = dpll(formula)
-
     if resitev is None:
         koncna_resitev = "0"
     else:
         koncna_resitev = str()
         for element in resitev:
-            koncna_resitev += "{} ".format(element)
+            if isinstance(element, Not):
+                koncna_resitev += "-{} ".format(Not(element).flatten())
+            else:
+                koncna_resitev += "{} ".format(element)
 
     print("time elapsed: {:.2f}s".format(time.time() - start_time))
     file = open(izhod, "w")
     file.write(koncna_resitev)
     file.close()
-    print("rešitev je pravilna " + str(formula.evaluate(resitev)))
-    return formula.evaluate(resitev)
+    return(koncna_resitev)
 
 
 def step12(formula):
@@ -88,8 +89,6 @@ def dpll(stara_formula, valuation=set()):
     else:
         while changed:
             for literal in changes:
-                if type(formula) ==  Variable:
-                    valuation.add(copy.deepcopy(literal))
                 formula.simplify_by(literal)
                 formula = formula.simplify()
                 if formula in {T, F}:
@@ -231,7 +230,7 @@ if command_line:
     print(main(vhod, izhod))
 
 
-#dato = "graf2"
-#f = main("Examples/sudoku_mini.txt", "Examples/sudoku_mini_r.txt")
+#dato = "graftester"
+#print(main("Graphs/graftester.txt", "Graphs/tester_resitev.txt"))
 #print(main("Examples/{}.txt".format(dato), "Examples/{}_r.txt".format(dato)))
-#print(f)
+
