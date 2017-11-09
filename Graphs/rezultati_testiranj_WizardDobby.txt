@@ -1,0 +1,154 @@
+testGraph
+time elapsed: 10.78s
+time elapsed: 10.33s
+time elapsed: 10.45s
+time elapsed: 10.23s
+time elapsed: 10.39s
+Graphs/graf2
+time elapsed: 0.77s
+time elapsed: 0.78s
+time elapsed: 0.80s
+time elapsed: 0.78s
+time elapsed: 0.81s
+Graphs/graf3
+time elapsed: 2.10s
+time elapsed: 2.16s
+time elapsed: 2.18s
+time elapsed: 2.17s
+time elapsed: 2.60s
+Examples/DasSudoku
+time elapsed: 1.41s
+time elapsed: 1.28s
+time elapsed: 1.19s
+time elapsed: 1.22s
+time elapsed: 1.25s
+Examples/DasSudoku
+time elapsed: 1.34s
+time elapsed: 1.27s
+time elapsed: 1.19s
+time elapsed: 1.18s
+time elapsed: 1.19s
+Examples/sudoku_easy
+time elapsed: 1.24s
+time elapsed: 1.14s
+time elapsed: 1.11s
+time elapsed: 1.14s
+time elapsed: 1.13s
+Examples/sudoku_evil2
+time elapsed: 2.32s
+time elapsed: 2.25s
+time elapsed: 2.26s
+time elapsed: 2.24s
+time elapsed: 2.27s
+Examples/sudoku_hard
+time elapsed: 2.17s
+time elapsed: 2.15s
+time elapsed: 2.13s
+time elapsed: 2.19s
+time elapsed: 2.18s
+Examples/sudoku_hard22
+testGraph
+time elapsed: 13.80s
+time elapsed: 10.61s
+time elapsed: 10.46s
+time elapsed: 10.42s
+time elapsed: 10.74s
+Graphs/graf2
+time elapsed: 0.82s
+time elapsed: 0.81s
+time elapsed: 0.81s
+time elapsed: 0.79s
+time elapsed: 0.81s
+Graphs/graf3
+time elapsed: 2.42s
+time elapsed: 2.20s
+time elapsed: 2.38s
+time elapsed: 2.18s
+time elapsed: 2.39s
+Graphs/graf4
+time elapsed: 5.30s
+time elapsed: 5.34s
+time elapsed: 5.19s
+time elapsed: 5.32s
+time elapsed: 5.16s
+Graphs/graf5
+time elapsed: 23.28s
+time elapsed: 24.45s
+time elapsed: 24.38s
+time elapsed: 23.89s
+time elapsed: 25.29s
+Graphs/graf6
+time elapsed: 6.39s
+time elapsed: 6.49s
+time elapsed: 6.11s
+time elapsed: 6.47s
+time elapsed: 6.29s
+Graphs/graf7
+time elapsed: 33.85s
+time elapsed: 34.00s
+time elapsed: 33.65s
+time elapsed: 34.33s
+time elapsed: 34.70s
+Graphs/graf8
+time elapsed: 40.32s
+time elapsed: 39.56s
+time elapsed: 40.89s
+time elapsed: 40.52s
+time elapsed: 39.27s
+Graphs/graf9
+time elapsed: 63.08s
+time elapsed: 62.37s
+time elapsed: 62.56s
+time elapsed: 63.14s
+time elapsed: 61.07s
+Graphs/graf10
+time elapsed: 94.83s
+time elapsed: 93.59s
+time elapsed: 95.76s
+time elapsed: 94.30s
+time elapsed: 93.77s
+Graphs/graf11
+time elapsed: 237.97s
+time elapsed: 239.08s
+time elapsed: 235.65s
+time elapsed: 236.36s
+time elapsed: 234.60s
+Graphs/graf12
+Examples/graf1
+time elapsed: 24.61s
+time elapsed: 24.54s
+time elapsed: 24.74s
+time elapsed: 24.36s
+time elapsed: 24.50s
+Examples/graf2
+time elapsed: 0.00s
+time elapsed: 0.00s
+time elapsed: 0.02s
+time elapsed: 0.00s
+time elapsed: 0.02s
+Examples/graf11
+Examples/primer2
+time elapsed: 1.66s
+time elapsed: 1.76s
+time elapsed: 2.02s
+time elapsed: 1.88s
+time elapsed: 1.83s
+Examples/primer2
+time elapsed: 2.45s
+time elapsed: 2.29s
+time elapsed: 2.20s
+time elapsed: 2.28s
+time elapsed: 2.16s
+Examples/sudoku_large
+time elapsed: 5.82s
+time elapsed: 5.82s
+time elapsed: 5.82s
+time elapsed: 5.95s
+time elapsed: 5.27s
+Examples/sudoku_large
+time elapsed: 155.89s
+time elapsed: 152.45s
+time elapsed: 151.09s
+time elapsed: 153.24s
+time elapsed: 152.89s
+Graphs/graf13

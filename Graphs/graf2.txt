@@ -1,5 +1,6 @@
 c Graph Colouring to DIMACS
-c Number of vertices: 15 Number of colours: 9p cnf 135 1294
+c Number of vertices: 15 Number of colours: 9
+p cnf 135 1294
 1 0
 9 8 7 6 5 4 3 2 1 0
 -1 -2 0
