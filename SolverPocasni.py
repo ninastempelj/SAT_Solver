@@ -7,13 +7,11 @@
 #  - assume chosen l, repeat algorithm
 # - if fail: assume ~l, repeat algorithm
 ######################
-from boolean import *
+from booleanPocasni import *
 import operator
 import copy
 import time
 import sys
-
-#sys.setrecursionlimit(10000)
 
 command_line = False
 if len(sys.argv) == 3:
@@ -26,7 +24,6 @@ def main(vhod, izhod):
     start_time = time.time()
     formula = read_dimacs(vhod)
     resitev = dpll(formula)
-    print(formula.evaluate(resitev))
     if resitev is None:
         koncna_resitev = "0"
     else:
@@ -36,11 +33,12 @@ def main(vhod, izhod):
                 koncna_resitev += "-{} ".format(Not(element).flatten())
             else:
                 koncna_resitev += "{} ".format(element)
+
     print("time elapsed: {:.2f}s".format(time.time() - start_time))
     file = open(izhod, "w")
     file.write(koncna_resitev)
     file.close()
-    return koncna_resitev
+    return(koncna_resitev)
 
 
 def step12(formula):
@@ -85,29 +83,42 @@ def random_literal(formula):
 
 
 def dpll(stara_formula, valuation=set()):
-    changed, formula, changes = step12(stara_formula)
+    changed, formula, changes = step12(stara_formula.simplify())
     if not changed:
         valuation = valuation | changes
     else:
         while changed:
-            formula = formula.simplify(changes)
-            valuation = valuation |changes
-            changed, formula, changes = step12(formula)
+            for literal in changes:
+                if type(formula) ==  Variable:
+                    valuation.add(copy.deepcopy(literal))
+                formula.simplify_by(literal)
+                formula = formula.simplify()
+                if formula in {T, F}:
+                    break
+                valuation.add(literal)
+            changed, formula, changes = step12(formula.simplify())
         valuation = valuation | changes
+
     if formula == T:
         return valuation
     if formula == F:
         return None
-    
     literal = moms(formula)
-    formula1 = formula.simplify({literal})
-    valuation1 = valuation |{literal}
-    result1 = dpll(formula1, valuation1)
+
+    formula1 = copy.deepcopy(formula)
+    formula1.simplify_by(literal)
+    valuation1 = copy.deepcopy(valuation)
+    valuation1.add(literal)
+
+    result1 = dpll(formula1.simplify(), valuation1)
 
     if result1 is None:
-        formula2 = formula.simplify({Not(literal).flatten()})
-        valuation2 = valuation |{Not(literal).flatten()}
-        result2 = dpll(formula2, valuation2)
+        formula2 = copy.deepcopy(formula)
+        formula2.simplify_by(Not(literal).flatten())
+        valuation2 = copy.deepcopy(valuation)
+        valuation2.add(Not(literal).flatten())
+
+        result2 = dpll(formula2.simplify(), valuation2)
         return result2
     else:
         return result1
@@ -221,6 +232,7 @@ if command_line:
     print(main(vhod, izhod))
 
 
-dato = "sudoku_mini"
-#print(main("Graphs/graf4.txt", "Graphs/graf4_resitev.txt"))
-#main("{}.txt".format(dato), "{}_r.txt".format(dato))
+#dato = "graftester"
+#print(main("Examples/sudoku_mini.txt", "Examples/sudoku_mini_resitev_test.txt"))
+#print(main("Examples/{}.txt".format(dato), "Examples/{}_r.txt".format(dato)))
+

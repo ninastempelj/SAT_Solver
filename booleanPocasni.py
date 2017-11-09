@@ -36,16 +36,18 @@ class Variable(Formula):
             return True
         if self.x == F:
             return False
-        #assert False, "haha čudno je " + str(self) 
+        assert False, "haha čudno je"
 
-    def simplify(self, literals):
-        if self in {T, F}:
+    def simplify(self):
+        if self.x in {T, F}:
             return self.x
-        if self in literals:
-            return T
-        if Not(self) in literals:
-            return F
         return self
+
+    def simplify_by(self, literal):
+        if literal == self:
+            self.x = T
+        if literal == Not(self):
+            self.x = F
 
     def equiv(self, variable):
         return And(Or(variable, Not(self)), Or(Not(variable), self))
@@ -74,12 +76,21 @@ class Not(Formula):
         else:
             return self
 
-    def simplify(self, literals):
-        if self.x in {T} | literals:
+    def simplify(self):
+        if self.x == T:
             return F
-        if self in {F} | literals:
+        elif self.x == F:
             return T
-        return self
+        elif isinstance(self.x, Variable):
+            return self
+        else:
+            return self.flatten()
+
+    def simplify_by(self, literal):
+        if literal == self:
+            self.x = F
+        if literal == self.x :
+            self.x = T
 
     def equiv(self, variable):
         return And(Or(variable, self.x), Or(Not(variable), self))
@@ -120,6 +131,15 @@ class Multi(Formula):
         else:
             return out
 
+    def simplify(self):
+        terms = [x.simplify() for x in self.terms]
+        const = self.get_dual_class()()
+        if const in terms:
+            return const
+        # TODO: če sta dva enake vrednosti, enega vržemo ven
+        return self.get_class()(*terms).flatten()
+
+
 class And(Multi):
     empty = "T"
     connective = r" /\ "
@@ -135,13 +155,13 @@ class And(Multi):
         return And(Or(variable, *(Not(x).flatten() for x in self.terms)),
                    *(Or(Not(variable), x) for x in self.terms))
 
-    def simplify(self, literals):
-        terms = set([term.simplify(literals) for term in self.terms]) 
-        if F in terms:
-            return F
-        if T in terms:
-            terms.remove(T)
-        return And(*terms).flatten()
+    def simplify_by(self, literal):
+        t = set()
+        for term in self.terms:
+            if not term == literal:
+                term.simplify_by(literal)
+                t.add(term)
+        self.terms = frozenset(t)
 
 
 class Or(Multi):
@@ -159,14 +179,15 @@ class Or(Multi):
         return And(Or(Not(variable), *self.terms),
                    *(Or(variable, Not(x)) for x in self.terms))
 
-    def simplify(self, literals):
-        terms = set([term.simplify(literals) for term in self.terms]) 
-        if T in terms:
-            return T
-        if F in terms:
-            terms.remove(F)
-        return Or(*terms).flatten()
-
+    def simplify_by(self, literal):
+        t = set()
+        for term in self.terms:
+            if term == literal:
+                t.add(T)
+            elif not Not(term).flatten() == literal:
+                term.simplify_by(literal)
+                t.add(term)
+        self.terms = frozenset(t)
 
 T = And()
 F = Or()
