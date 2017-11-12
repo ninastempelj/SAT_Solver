@@ -26,7 +26,7 @@ def main(vhod, izhod):
     start_time = time.time()
     formula = read_dimacs(vhod)
     resitev = dpll(formula)
-    print(formula.evaluate(resitev))
+    #print(formula.evaluate(resitev))
     if resitev is None:
         koncna_resitev = "0"
     else:
@@ -36,7 +36,7 @@ def main(vhod, izhod):
                 koncna_resitev += "-{} ".format(Not(element).flatten())
             else:
                 koncna_resitev += "{} ".format(element)
-    print("time elapsed: {:.2f}s".format(time.time() - start_time))
+    #print("time elapsed: {:.2f}s".format(time.time() - start_time))
     file = open(izhod, "w")
     file.write(koncna_resitev)
     file.close()
@@ -221,6 +221,6 @@ if command_line:
     print(main(vhod, izhod))
 
 
-dato = "sudoku_mini"
+#dato = "sudoku_mini"
 #print(main("Graphs/graf4.txt", "Graphs/graf4_resitev.txt"))
 #main("{}.txt".format(dato), "{}_r.txt".format(dato))

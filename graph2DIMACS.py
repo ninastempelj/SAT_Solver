@@ -26,7 +26,7 @@ def graphCoulouring2DIMACS(G, k, izhodna):
     numbTerms = len(seznamVrstic)
     file = open(izhodna, "w")
     file.write("c Graph Colouring to DIMACS\n")
-    file.write("c Number of vertices: {0} Number of colours: {1}".format(len(G), k))
+    file.write("c Number of vertices: {0} Number of colours: {1}\n".format(len(G), k))
     file.write("p cnf {0} {1}\n".format(numbVariables, numbTerms))
     for vrstica in seznamVrstic:
         file.write(vrstica)

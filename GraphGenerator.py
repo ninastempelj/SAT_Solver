@@ -18,6 +18,11 @@ def GraphGenerator(N,C, izhodna):
     #print(seznam)
 
 #Test:
-GraphGenerator(40,30, "Graphs/graf12.txt")
+GraphGenerator(29,19, "Graphs/graf1.txt")
+
+
+
+
+
 
 

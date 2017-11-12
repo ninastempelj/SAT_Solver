@@ -329,3 +329,5 @@ time elapsed: 95.04s
 time elapsed: 94.57s
 time elapsed: 94.87s
 time elapsed: 95.79s
+testGraph
+time elapsed: 50.88s
